@@ -1,0 +1,11 @@
+# Secrets and sensitive files
+.env
+*.secret
+secrets/
+
+# OpenClaw internal
+.openclaw/
+
+# OS
+.DS_Store
+Thumbs.db
