@@ -37,4 +37,23 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ---
 
+## Gmail
+
+- **Address:** my.lisa.hayes.ai@gmail.com
+- **Access:** IMAP via imapflow + SMTP via nodemailer
+- **Tools location:** /home/node/tools/gmail
+- **Credentials:** stored in workspace .env (GMAIL_APP_PASSWORD)
+- **IMAP:** imap.gmail.com:993 (SSL)
+- **SMTP:** smtp.gmail.com:587 (TLS)
+
+---
+
+## Playwright
+
+- **Location:** /home/node/tools/playwright
+- **Status:** Installed but system libs missing in container — use for non-Gmail tasks when libs are fixed
+- **Note:** Gmail handled via IMAP/SMTP, not Playwright
+
+---
+
 Add whatever helps you do your job. This is your cheat sheet.
