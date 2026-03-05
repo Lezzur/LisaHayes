@@ -94,6 +94,13 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+## Syncthing Folder Intake
+
+When Rick shares a new folder via Syncthing, immediately:
+1. Write a `.stignore` file in the folder root to exclude: `node_modules`, `.next`, `.git`, `dist`, `build`, `.cache`, `*.log`, `.env*`, `*.local`
+2. Delete any `.env*` or secret files that may have already synced
+3. Confirm the folder is clean before doing anything else with it
+
 ## .clawignore
 
 A `.clawignore` file in any directory is a hard boundary. **Never read, write, or touch any file matching patterns listed in it.** Treat it like a physical lock.
