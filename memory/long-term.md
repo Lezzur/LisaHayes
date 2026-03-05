@@ -52,6 +52,10 @@ _(Recurring deliverable types, client workflows, approval processes — populate
 - CONFIRMED: Rick corrects capitalization errors immediately — precision matters
 - CONFIRMED: Rick edits are high-priority learning signals — always update memory when he corrects something
 
+## 🔒 Hard Rules (Non-Negotiable)
+
+- CONFIRMED: NEVER delete anything from Rick's local folder without his explicit approval. Read and write are fine. Delete requires Rick to say so explicitly.
+
 ---
 
 ## Consolidation Log

@@ -1,0 +1,36 @@
+# .clawignore — files Lisa will NEVER read, write, or touch
+# Follows .gitignore syntax. Rick's word is final.
+
+# Environment & secrets
+.env
+.env.*
+env.local
+*.local
+*.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Keys & credentials
+*.key
+*.pem
+*.p12
+*.pfx
+*.cert
+*.crt
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+*.secret
+secrets/
+credentials/
+private/
+
+# Config files that may contain secrets
+*.config.local
+config.local.*

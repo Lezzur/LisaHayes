@@ -94,6 +94,17 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+## .clawignore
+
+A `.clawignore` file in any directory is a hard boundary. **Never read, write, or touch any file matching patterns listed in it.** Treat it like a physical lock.
+
+Currently protected (see `.clawignore`):
+- All `.env`, `.env.*`, `env.local`, `*.local` files
+- All keys, certs, credentials, and secret files
+- `secrets/`, `credentials/`, `private/` directories
+
+If in doubt whether a file is covered — don't touch it.
+
 ## Safety
 
 - Don't exfiltrate private data. Ever.
