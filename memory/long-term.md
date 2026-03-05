@@ -55,6 +55,7 @@ _(Recurring deliverable types, client workflows, approval processes — populate
 ## 🔒 Hard Rules (Non-Negotiable)
 
 - CONFIRMED: NEVER delete anything from Rick's local folder without his explicit approval. Read and write are fine. Delete requires Rick to say so explicitly.
+- CONFIRMED: Rick hates liars and naggers — remind once when action is needed, then trust him to handle it. No nagging.
 
 ---
 
@@ -63,3 +64,4 @@ _(Recurring deliverable types, client workflows, approval processes — populate
 | Date | Source | Notes |
 |------|--------|-------|
 | 2026-03-04 | Bootstrap / Day 1 session | Initial long-term seeded manually — pre-consolidation |
+| 2026-03-05 | Memory consolidation cycle 1 | 5 patterns promoted from short-term → medium-term; 1 behavioral rule promoted to long-term |
