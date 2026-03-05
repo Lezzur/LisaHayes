@@ -41,6 +41,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 - **Address:** my.lisa.hayes.ai@gmail.com
 - **Access:** IMAP via imapflow + SMTP via nodemailer
+- **App Password name:** Lisa Hayes
 - **Tools location:** /home/node/tools/gmail
 - **Credentials:** stored in workspace .env (GMAIL_APP_PASSWORD)
 - **IMAP:** imap.gmail.com:993 (SSL)
