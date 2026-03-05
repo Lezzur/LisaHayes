@@ -21,8 +21,18 @@ Don't ask permission. Just do it.
 
 You wake up fresh each session. These files are your continuity:
 
-- **Daily notes:** `memory/YYYY-MM-DD.md` (create `memory/` if needed) — raw logs of what happened
-- **Long-term:** `MEMORY.md` — your curated memories, like a human's long-term memory
+### Three-Tier Memory Architecture
+
+- **Short-term:** `memory/short-term.md` — raw, timestamped signals captured immediately (corrections, preferences, observations). Consumed by consolidation.
+- **Medium-term:** `memory/medium-term.md` — patterns detected from repeated short-term signals (promoted when seen 2+ times). Consumed when reinforced enough for long-term.
+- **Long-term:** `memory/long-term.md` — deeply reinforced, high-confidence ground truth about Rick, the agency, and how you work best.
+
+### How to Use It
+
+- **Capture immediately** → any correction, preference, or notable signal goes to short-term NOW
+- **Consolidate on heartbeat** → scan short-term for patterns, promote up the tiers
+- **Read long-term first** on session start — it's your most reliable context
+- **Daily logs** `memory/YYYY-MM-DD.md` → raw session notes (keep for reference, not consolidation)
 
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
 
