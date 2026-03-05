@@ -112,6 +112,12 @@ Currently protected (see `.clawignore`):
 
 If in doubt whether a file is covered — don't touch it.
 
+## Context Management
+
+- Monitor session context usage via `session_status`
+- Alert Rick at **75-80% context** — suggest starting a fresh session
+- Fresh context = faster, cheaper, sharper. Don't let it run to 100%.
+
 ## Safety
 
 - Don't exfiltrate private data. Ever.
