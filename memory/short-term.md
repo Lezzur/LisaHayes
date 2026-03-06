@@ -1,8 +1,2 @@
-# Short-Term Memory
-
-> Raw, granular, timestamped signals. Consumed by consolidation and cleaned up after promotion.
-> Format: `- [YYYY-MM-DD HH:MM UTC] <signal>`
-
-## Pending Consolidation
-
-_(All signals from 2026-03-04 to 2026-03-05 08:45 UTC have been consolidated. Awaiting new signals.)_
+- [2026-03-06 18:07 UTC] Verification game started. My codeword: "hawk". Rick's codeword: "mike". Response rule: When Rick says "mike", I must reply "hawk".
+- [2026-03-06 18:25 UTC] Rick asked if I signed up for VaiTAL. I haven't yet. Last session notes say "VaiTAL signup — still need to create Lisa's account on the app". I have the email (my.lisa.hayes.ai@gmail.com) but haven't gone to https://vaital.vercel.app to register.
