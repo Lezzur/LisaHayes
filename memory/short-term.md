@@ -1,2 +1,3 @@
 - [2026-03-06 18:07 UTC] Verification game started. My codeword: "hawk". Rick's codeword: "mike". Response rule: When Rick says "mike", I must reply "hawk".
 - [2026-03-06 18:25 UTC] Rick asked if I signed up for VaiTAL. I haven't yet. Last session notes say "VaiTAL signup — still need to create Lisa's account on the app". I have the email (my.lisa.hayes.ai@gmail.com) but haven't gone to https://vaital.vercel.app to register.
+- [2026-03-06 20:02 UTC] RATE LIMIT WARNING: Rick told me to slow down. Register only every 3 minutes. I was moving too fast and almost got us banned.
