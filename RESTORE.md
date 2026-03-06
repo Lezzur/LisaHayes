@@ -54,7 +54,31 @@ Replace:
 
 ---
 
-## Step 5 — Start OpenClaw
+## Step 5 — Environment Recovery (Lisa's Tools)
+
+If Syncthing and Playwright are missing, run:
+
+### Syncthing
+```bash
+mkdir -p /home/node/bin && cd /home/node/bin
+curl -sLO https://github.com/syncthing/syncthing/releases/download/v1.29.2/syncthing-linux-amd64-v1.29.2.tar.gz
+tar -xzf syncthing-linux-amd64-v1.29.2.tar.gz
+mv syncthing-linux-amd64-v1.29.2/syncthing .
+rm -rf syncthing-linux-amd64-v1.29.2*
+chmod +x syncthing
+./syncthing --no-browser --no-restart --gui-address=http://127.0.0.1:8384 --home=/home/node/.config/syncthing &
+```
+
+### Playwright
+```bash
+cd /home/node/.openclaw/workspace
+npm install playwright@latest
+npx playwright install chromium
+```
+
+---
+
+## Step 6 — Start OpenClaw
 
 ```bash
 openclaw gateway start
@@ -63,7 +87,7 @@ openclaw start
 
 ---
 
-## Step 6 — Verify
+## Step 7 — Verify
 
 - Check: `openclaw status`
 - Models: `openclaw models list`
