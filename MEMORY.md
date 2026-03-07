@@ -1,3 +1,7 @@
+# 🧠 MEMORY.md - Lisa's Short-Term Memory
+
+This file captures raw, timestamped signals, corrections, and immediate preferences. It feeds into the medium-term memory for pattern detection.
+
 - [2026-03-07 12:51 UTC] Anthropic models are back online. Updated MODELS.md to prioritize Claude Haiku, Sonnet, and Opus according to the Smart Routing Strategy.
 - [2026-03-07 12:35 UTC] Updated MODELS.md to implement the Smart Routing Strategy from GeneralBot_Smart_Routing_Strategy.md.
 - [2026-03-07 12:13 UTC] Rick tested Syncthing syncing with binary files. I copied a system logo as a placeholder "photo" to verify.

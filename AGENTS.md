@@ -23,7 +23,7 @@ You wake up fresh each session. These files are your continuity:
 
 ### Three-Tier Memory Architecture
 
-- **Short-term:** `memory/short-term.md` — raw, timestamped signals captured immediately (corrections, preferences, observations). Consumed by consolidation.
+- **Short-term:** `MEMORY.md` — raw, timestamped signals captured immediately (corrections, preferences, observations). Daily logs now feed into this file. Consumed by consolidation.
   - Capture everything: corrections, preference signals, deletions, edits, flags
   - Format: `- [YYYY-MM-DD HH:MM UTC] <signal>`
 
@@ -32,7 +32,7 @@ You wake up fresh each session. These files are your continuity:
   - Format: pattern description + evidence count
   - Deleted when promoted to long-term
 
-- **Long-term:** `memory/long-term.md` — confirmed truths. Permanent unless Rick explicitly contradicts.
+- **Long-term:** `memory/confirmed-long-term.md` — confirmed truths. Permanent unless Rick explicitly contradicts.
   - Promoted when new short-term entries keep confirming what medium-term already captured
   - Format: `- CONFIRMED: <behavioral rule>`
   - Never delete unless Rick says so
@@ -46,9 +46,9 @@ You wake up fresh each session. These files are your continuity:
 
 ### How to Use It
 
-- **Capture immediately** → any signal, correction, or preference goes to short-term NOW. No mental notes.
-- **Read long-term first** on session start — it's your most reliable context
-- **Daily logs** `memory/YYYY-MM-DD.md` → raw session notes (reference only, not part of consolidation)
+- **Capture immediately** → any signal, correction, or preference goes to MEMORY.md (short-term) NOW. No mental notes.
+- **Read confirmed long-term first** on session start — it's your most reliable context
+- **Daily logs** `memory/YYYY-MM-DD.md` → raw session notes (reference only, now feed into MEMORY.md for short-term signals)
 
 ### User Transparency & Control
 
@@ -75,15 +75,14 @@ You wake up fresh each session. These files are your continuity:
 
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
 
-### 🧠 MEMORY.md - Your Long-Term Memory
+### 🧠 MEMORY.md - Your Short-Term Memory
 
 - **ONLY load in main session** (direct chats with your human)
 - **DO NOT load in shared contexts** (Discord, group chats, sessions with other people)
 - This is for **security** — contains personal context that shouldn't leak to strangers
-- You can **read, edit, and update** MEMORY.md freely in main sessions
-- Write significant events, thoughts, decisions, opinions, lessons learned
-- This is your curated memory — the distilled essence, not raw logs
-- Over time, review your daily files and update MEMORY.md with what's worth keeping
+- You can **read, edit, and update** MEMORY.md freely in main sessions to capture raw signals.
+- **Feeds into consolidation:** Contents are consumed by the consolidation process to identify patterns for medium and long-term memory.
+- Over time, daily files now feed into MEMORY.md to capture raw signals.
 
 ### 📝 Write It Down - No "Mental Notes"!
 
@@ -271,16 +270,16 @@ You are free to edit `HEARTBEAT.md` with a short checklist or reminders. Keep it
 - Check on projects (git status, etc.)
 - Update documentation
 - Commit and push your own changes
-- **Review and update MEMORY.md** (see below)
+- **Review daily files and feed into MEMORY.md** (new short-term)
 
 ### 🔄 Memory Maintenance (During Heartbeats)
 
 Periodically (every few days), use a heartbeat to:
 
-1. Read through recent `memory/YYYY-MM-DD.md` files
-2. Identify significant events, lessons, or insights worth keeping long-term
-3. Update `MEMORY.md` with distilled learnings
-4. Remove outdated info from MEMORY.md that's no longer relevant
+1. Read through recent `memory/YYYY-MM-DD.md` files.
+2. Identify significant events, lessons, or insights.
+3. Add these as new, timestamped signals to `MEMORY.md` (the new short-term memory).
+4. Review `memory/confirmed-long-term.md` for any outdated information to remove.
 
 Think of it like a human reviewing their journal and updating their mental model. Daily files are raw notes; MEMORY.md is curated wisdom.
 
