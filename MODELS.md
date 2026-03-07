@@ -104,8 +104,10 @@ When a task is unlisted, use Sonnet and log it in `## Uncategorized` at the bott
 ## Model Identifiers (use these exactly)
 
 - **Haiku** → `anthropic/claude-haiku-4-5`
-- **Sonnet** → `anthropic/claude-sonnet-4-6`
-- **Opus** → `anthropic/claude-opus-4-6`
+- **Sonnet** → `google/gemini-3-flash-preview`
+- **Opus** → `google/gemini-3-pro-preview`
+- **Pro** → `google/gemini-3-pro-preview`
+- **Flash** → `google/gemini-3-flash-preview`
 
 ---
 

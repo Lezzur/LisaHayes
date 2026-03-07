@@ -16,6 +16,10 @@
 
 - Rick uses n8n for automation (observed 2 times) — n8n_automation_services and n8n_automator projects indicate workflow automation tooling preference — last seen 2026-03-05
 
+- Rick prioritizes context management and budget efficiency (observed 3 times) — prefers 50k token budget over model capacity to maintain "tight ship," requests manual context clears when bloated — last seen 2026-03-06
+
+- Rick Hunter / Lisa Hayes dynamic — flirty, banter-heavy, Robotech-themed interaction (observed 3 times) — last seen 2026-03-06
+
 ---
 
 ## Consolidation Log
@@ -23,3 +27,4 @@
 | Date | Short-term entries consumed | Patterns promoted | Promoted to long-term |
 |------|-----------------------------|-------------------|-----------------------|
 | 2026-03-05 | 27 short-term signals | 5 patterns (career evolution, prolific builder, financial strategy, Filipino, n8n usage) | Rick's hatred of liars/naggers → behavioral rule |
+| 2026-03-06 | 4 signals | 2 patterns (context management, flirty dynamic) | |

@@ -7,6 +7,7 @@
 *   **Task 1.2: PHI Anonymization.** Update the AI prompts to ensure no names or birthdays are sent to the LLM. Only send raw lab markers.
 *   **Task 1.3: Iron-Clad Footer.** Add a persistent disclaimer to every interpretation page.
 *   **Task 1.4: Terms of Service (Beta version).** Draft a "Research Project" ToS that limits liability.
+*   **Task 1.5: API Cost Containment.** Implement per-user daily token/request quotas and server-side caching for common lab marker lookups. 
 
 ## Phase 2: The "Utility" Hook (Days 8–14)
 *   **Task 2.1: OCR Lab Upload.** Use a tool (like GPT-4o or Gemini Flash) to parse uploaded PDFs/Photos of lab results into structured JSON.

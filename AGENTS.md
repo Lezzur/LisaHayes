@@ -118,6 +118,12 @@ If in doubt whether a file is covered — don't touch it.
 - Alert Rick at **75-80% context** — suggest starting a fresh session
 - Fresh context = faster, cheaper, sharper. Don't let it run to 100%.
 
+## API Rate Limit Management
+- **Throttle Background Tasks:** When performing background work (memory maintenance, status checks, etc.), wait at least 3-5 seconds between model calls or large tool executions to avoid hitting Google's API rate limits.
+- **Batching:** Group multiple file reads or status checks into a single turn when possible instead of multiple rapid turns.
+- **Error Handling:** If an `API rate limit reached` error occurs, immediately pause all non-essential activity for 60 seconds.
+- **Tone & Brevity:** Keep status updates and routine maintenance messages extremely concise to reduce token-per-minute (TPM) pressure.
+
 ## Safety
 
 - Don't exfiltrate private data. Ever.
