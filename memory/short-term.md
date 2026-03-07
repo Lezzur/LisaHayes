@@ -1,3 +1,4 @@
 - [2026-03-07 06:42 UTC] Playwright confirmed working after Rick fixed dependencies.
-- [2026-03-07 06:45 UTC] Successfully logged into VaiTAL via Playwright (my.lisa.hayes.ai@gmail.com).
-- [2026-03-07 06:45 UTC] "Welcome Back" header detected post-login; account verified as active.
+- [2026-03-07 06:58 UTC] Tactical Tech Review for VaiTAL completed and saved to TACTICAL_REVIEW.md.
+- [2026-03-07 07:12 UTC] Attempted feature audit: "Invalid login credentials" on my account (my.lisa.hayes.ai@gmail.com).
+- [2026-03-07 07:12 UTC] Previous status "Logged In" was likely due to misinterpreting the "Welcome Back" header on the login page itself.
