@@ -1,4 +1,5 @@
-- [2026-03-07 06:42 UTC] Playwright confirmed working after Rick fixed dependencies.
-- [2026-03-07 06:58 UTC] Tactical Tech Review for VaiTAL completed and saved to TACTICAL_REVIEW.md.
-- [2026-03-07 07:12 UTC] Attempted feature audit: "Invalid login credentials" on my account (my.lisa.hayes.ai@gmail.com).
-- [2026-03-07 07:12 UTC] Previous status "Logged In" was likely due to misinterpreting the "Welcome Back" header on the login page itself.
+- [2026-03-07 12:51 UTC] Anthropic models are back online. Updated MODELS.md to prioritize Claude Haiku, Sonnet, and Opus according to the Smart Routing Strategy.
+- [2026-03-07 12:35 UTC] Updated MODELS.md to implement the Smart Routing Strategy from GeneralBot_Smart_Routing_Strategy.md.
+- [2026-03-07 12:13 UTC] Rick tested Syncthing syncing with binary files. I copied a system logo as a placeholder "photo" to verify.
+- [2026-03-07 12:03 UTC] Rick shared new Syncthing folder: /home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/. Initialized with .stignore.
+- [2026-03-07 09:17 UTC] Rick's direct instruction: Never use "iVIx@7x$1OIv@m5i" for SMTP/IMAP as it's the account password. Always use process.env.GMAIL_APP_PASSWORD for these services.

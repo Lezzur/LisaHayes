@@ -1,118 +1,70 @@
-# MODELS.md - Task → Model Mapping
+# MODELS.md - Smart Routing (v1.0)
 
-Default: **Sonnet** (when task is not listed below)
-When a task is unlisted, use Sonnet and log it in `## Uncategorized` at the bottom so we can sort it out.
+**Priority:** Balanced Cost vs Quality (Updated: 2026-03-07)
+Follows `GeneralBot_Smart_Routing_Strategy.md` logic.
+
+## 🛠️ Model Registry (Mappings)
+- **Haiku** (BUDGET) → `anthropic/claude-haiku-4-5`
+- **Sonnet** (MID) → `anthropic/claude-sonnet-4-6`
+- **Opus/Pro** (PREMIUM) → `anthropic/claude-opus-4-6`
+- **Technical** (GPT-Equivalent) → `anthropic/claude-sonnet-4-6` (General) / `anthropic/claude-opus-4-6` (Strategic)
 
 ---
 
-## ✍️ Writing
-
+## 🗣️ Conversation & Q&A
 | Task | Model |
-|------|-------|
-| Social captions (simple) | Haiku |
-| Hashtag generation | Haiku |
-| Alt text for images | Haiku |
-| Basic proofreading | Haiku |
-| Headline variations | Haiku |
-| Product descriptions | Sonnet |
-| Blog posts & articles | Sonnet |
-| Email newsletters | Sonnet |
-| Ad copy | Sonnet |
-| SEO content | Sonnet |
-| Press releases | Sonnet |
-| Podcast scripts | Sonnet |
-| Long-form white papers | Opus |
-| Brand naming + rationale | Opus |
-| Complex storytelling/narratives | Opus |
-| Brand voice guidelines | Opus |
-| High-stakes persuasive copy | Opus |
+|---|---|
+| Greeting / small talk | Haiku |
+| Factual Q&A | Haiku |
+| Multi-turn dialogue | Haiku |
+| Opinion / recommendation | Sonnet |
+| Sensitive / nuanced topic | Sonnet |
+| Summarize conversation | Haiku |
 
 ---
 
-## 🎨 Visuals
-
+## ✍️ Writing & Creative
 | Task | Model |
-|------|-------|
-| Alt text (bulk) | Haiku |
-| AI image prompt writing (simple) | Haiku |
-| AI image prompt writing (complex/stylized) | Sonnet |
-| Mood board descriptions | Sonnet |
-| Style guide writing | Sonnet |
-| Visual concept descriptions | Sonnet |
-| Creative briefs for designers | Sonnet |
-| Color + aesthetic direction | Sonnet |
-| Full visual identity strategy | Opus |
+|---|---|
+| Social captions / Hashtags | Haiku |
+| Email drafts (Short) | Haiku |
+| Email drafts (Formal/Long) | Sonnet |
+| Blog posts / Articles | Sonnet |
+| Creative story / Poetry | Opus |
+| Resume / Cover letter | Sonnet |
+| Proofreading / Grammar | Haiku |
 
 ---
 
-## 🎬 Video
-
+## 💻 Technical & Coding
 | Task | Model |
-|------|-------|
-| YouTube tags & metadata | Haiku |
-| Video captions/subtitles editing | Haiku |
-| Short-form video scripts (Reels/TikTok) | Sonnet |
-| YouTube video scripts | Sonnet |
-| Shot lists | Sonnet |
-| Video briefs | Sonnet |
-| Storyboard descriptions | Sonnet |
-| Long-form documentary scripts | Opus |
-| Multi-video campaign scripting | Opus |
+|---|---|
+| Explain code / Simple function | Sonnet |
+| Complex feature / Debugging | Sonnet |
+| Refactor / Architecture | Opus |
+| SQL / Regex | Haiku |
+| API integration | Sonnet |
 
 ---
 
-## 🎞️ Animation
-
+## 🔍 Research & Docs
 | Task | Model |
-|------|-------|
-| Simple explainer scripts | Sonnet |
-| Motion design briefs | Sonnet |
-| Character descriptions | Sonnet |
-| Full character development + backstory | Opus |
-| Complex explainer scripts | Opus |
-| Animation series bible | Opus |
+|---|---|
+| Quick fact-check | Haiku |
+| Current events / News | Sonnet |
+| Deep research / Analysis | Opus |
+| Summarize doc (<50k) | Sonnet |
+| Summarize doc (50k+) | Sonnet | (Note: Gemini Flash preferred for 1M+ context)
 
 ---
 
-## 🏢 Agency Ops
-
-| Task | Model |
-|------|-------|
-| Meeting notes formatting | Haiku |
-| Quick client email replies | Haiku |
-| Invoice line item descriptions | Haiku |
-| Project status updates | Haiku |
-| Standard client proposals | Sonnet |
-| Creative briefs | Sonnet |
-| Campaign recaps/reports | Sonnet |
-| Content calendars | Sonnet |
-| High-value client proposals | Opus |
-| Full content strategy documents | Opus |
-| Campaign concept development | Opus |
-| Multi-platform campaign planning | Opus |
+## 📏 Default Escalation
+- **Default:** `anthropic/claude-sonnet-4-6` (Sonnet)
+- **Complex/Strategic:** `anthropic/claude-opus-4-6` (Opus)
 
 ---
 
-## Rule of Thumb
-
-- **Haiku** → Repetitive, fast, low-stakes
-- **Sonnet** → Most day-to-day production work (DEFAULT)
-- **Opus** → Strategic, complex, high-quality, client-facing
-
----
-
-## Model Identifiers (use these exactly)
-
-- **Haiku** → `anthropic/claude-haiku-4-5`
-- **Sonnet** → `google/gemini-3-flash-preview`
-- **Opus** → `google/gemini-3-pro-preview`
-- **Pro** → `google/gemini-3-pro-preview`
-- **Flash** → `google/gemini-3-flash-preview`
-
----
-
-## Uncategorized
-
-_Tasks encountered that aren't listed above. Review periodically and assign a model._
-
-<!-- Log format: `- YYYY-MM-DD: [task description] → used Sonnet (default)` -->
+## 💰 Cost Guardrails
+1. **Flash First:** Use Flash for all repetitive, low-stakes, or bulk tasks.
+2. **Pro for Quality:** Escalate to Pro only for high-stakes, client-facing, or complex logic.
+3. **Monthly Audit:** Review logs to ensure no over-routing to Pro.

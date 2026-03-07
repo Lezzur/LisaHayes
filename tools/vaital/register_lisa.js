@@ -31,14 +31,19 @@ const env = envFile.split('\n').reduce((acc, line) => {
     
     page.on('response', async response => {
         if (response.url().includes('signup')) {
-            const data = await response.json();
-            console.log('SIGNUP RESPONSE:', JSON.stringify(data, null, 2));
+            try {
+              const data = await response.json();
+              console.log('SIGNUP RESPONSE:', JSON.stringify(data, null, 2));
+            } catch (e) {}
         }
     });
 
     await page.click('button[type="submit"]');
     
     await page.waitForTimeout(5000);
+    console.log('Final URL:', page.url());
+    const body = await page.innerText('body');
+    console.log('Page content snippet:', body.substring(0, 500));
 
   } catch (error) {
     console.error('Error during audit:', error);

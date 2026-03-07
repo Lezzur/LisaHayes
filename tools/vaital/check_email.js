@@ -19,18 +19,25 @@ function openInbox(cb) {
 imap.once('ready', function() {
   openInbox(function(err, box) {
     if (err) throw err;
-    const f = imap.seq.fetch(box.messages.total + ':*', { bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)','TEXT'] });
+    const totalMessages = box.messages.total;
+    const fetchStart = 1; // Get ALL messages for full check
+    const f = imap.seq.fetch(fetchStart + ':*', { bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)','TEXT','1'] });
     f.on('message', function(msg, seqno) {
       msg.on('body', function(stream, info) {
+        console.log('Body Info:', JSON.stringify(info));
         simpleParser(stream, (err, mail) => {
           if (err) console.error(err);
           console.log('--- MESSAGE ---');
           console.log('Subject:', mail.subject);
-          console.log('Text:', mail.text);
+          console.log('Text snippet:', mail.text ? mail.text.substring(0, 500) : '[No Text]');
+          console.log('HTML snippet:', mail.html ? mail.html.substring(0, 500) : '[No HTML]');
           // Look for confirmation link
-          const linkMatch = mail.text.match(/https?:\/\/[^\s]+/);
-          if (linkMatch) {
-            console.log('FOUND LINK:', linkMatch[0]);
+          const body = mail.text || mail.html;
+          if (body) {
+            const linkMatch = body.match(/https?:\/\/[^\s"<>]+/);
+            if (linkMatch) {
+              console.log('FOUND LINK:', linkMatch[0]);
+            }
           }
         });
       });
