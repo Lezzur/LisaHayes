@@ -10,7 +10,7 @@
 *   **Task 1.5: API Cost Containment.** Implement per-user daily token/request quotas and server-side caching for common lab marker lookups. 
 
 ## Phase 2: The "Utility" Hook (Days 8–14)
-*   **Task 2.1: OCR Lab Upload.** Use a tool (like GPT-4o or Gemini Flash) to parse uploaded PDFs/Photos of lab results into structured JSON.
+*   **Task 2.1: OCR Lab Upload.** Use a tool (like Gemini 2.5 Flash) to parse uploaded PDFs/Photos of lab results into structured JSON.
 *   **Task 2.2: Trend Visualization.** Build a basic "History" view that charts at least 3 key markers (e.g., Glucose, Cholesterol, Blood Pressure).
 *   **Task 2.3: "Doctor Report" Export.** Create a "One-Page Summary" PDF generator for users to bring to appointments.
 

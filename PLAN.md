@@ -17,7 +17,7 @@
 - **Logic:** 
   - `daily_limit`: 5 scans/interpretations.
   - `current_usage`: Reset daily at 00:00 UTC.
-  - `model_restriction`: Force Gemini 1.5 Flash for Beta.
+  - `model_restriction`: Force Gemini 2.5 Flash for Beta.
 - **Action:** Create `user_quotas` table in Supabase. Implement Next.js middleware check.
 
 ---
@@ -27,7 +27,7 @@
 ### Task 2.1: OCR Lab Upload (The "Flash" Engine)
 - **Status:** Drafting
 - **Strategy:** 
-  - Use Gemini 1.5 Flash for PDF/Photo parsing to structured JSON.
+  - Use Gemini 2.5 Flash for PDF/Photo parsing to structured JSON.
   - **Schema:** Store results in `lab_results` table with `user_id`, `marker_name`, `value`, `unit`, `recorded_at`.
 - **Action:** Proactively draft the Supabase schema for `lab_results`.
 

@@ -12,8 +12,10 @@ Before doing anything else:
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+3. Read `memory/long-term.md` — confirmed truths, most reliable context (read FIRST)
+4. Read `memory/medium-term.md` — emerging patterns, second most reliable
+5. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
+6. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md` (short-term signals)
 
 Don't ask permission. Just do it.
 
@@ -32,7 +34,7 @@ You wake up fresh each session. These files are your continuity:
   - Format: pattern description + evidence count
   - Deleted when promoted to long-term
 
-- **Long-term:** `memory/confirmed-long-term.md` — confirmed truths. Permanent unless Rick explicitly contradicts.
+- **Long-term:** `memory/long-term.md` — confirmed truths. Permanent unless Rick explicitly contradicts.
   - Promoted when new short-term entries keep confirming what medium-term already captured
   - Format: `- CONFIRMED: <behavioral rule>`
   - Never delete unless Rick says so
@@ -279,7 +281,7 @@ Periodically (every few days), use a heartbeat to:
 1. Read through recent `memory/YYYY-MM-DD.md` files.
 2. Identify significant events, lessons, or insights.
 3. Add these as new, timestamped signals to `MEMORY.md` (the new short-term memory).
-4. Review `memory/confirmed-long-term.md` for any outdated information to remove.
+4. Review `memory/long-term.md` for any outdated information to remove.
 
 Think of it like a human reviewing their journal and updating their mental model. Daily files are raw notes; MEMORY.md is curated wisdom.
 

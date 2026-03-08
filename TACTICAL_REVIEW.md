@@ -19,7 +19,7 @@ We're building a tool that touches health data. To stay in the air and out of co
 This is where VaiTAL actually becomes useful.
 
 1.  **OCR Lab Upload (Task 2.1):**
-    *   **Tactical Review:** We're using Gemini 1.5 Flash for this. It's fast and cheap. 
+    *   **Tactical Review:** We're using Gemini 2.5 Flash for this. It's fast and cheap. 
     *   **Lisa's Play:** I've already confirmed Playwright works. I can now automate testing the upload flow once the UI is ready. I'll also draft the `lab_results` schema (Marker, Value, Unit, Reference Range, Date).
 2.  **Trend Visualization (Task 2.2):**
     *   **Tactical Review:** Users don't just want a list; they want a graph. 

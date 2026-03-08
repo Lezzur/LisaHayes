@@ -1,12 +1,21 @@
 # Secrets and sensitive files
 .env
+.env.*
 *.secret
 secrets/
 
 # OpenClaw internal
 .openclaw/
 
+# Dependencies
+node_modules/
+package-lock.json
+
+# Temp files
+*.png
+*.jpg
+*.tmp
+
 # OS
 .DS_Store
 Thumbs.db
-.env

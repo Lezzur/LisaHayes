@@ -52,7 +52,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ## Playwright
 
 - **Location:** /home/node/tools/playwright
-- **Status:** Installed but system libs missing in container — use for non-Gmail tasks when libs are fixed
+- **Status:** Installed and functional. Version: 1.58.2
 - **Note:** Gmail handled via IMAP/SMTP, not Playwright
 
 ---
