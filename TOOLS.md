@@ -40,12 +40,31 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ## Gmail
 
 - **Address:** my.lisa.hayes.ai@gmail.com
-- **Access:** IMAP via imapflow + SMTP via nodemailer
-- **App Password name:** Lisa Hayes
-- **Tools location:** /home/node/tools/gmail
-- **Credentials:** stored in workspace .env (GMAIL_APP_PASSWORD)
 - **IMAP:** imap.gmail.com:993 (SSL)
 - **SMTP:** smtp.gmail.com:587 (TLS)
+- **Credentials:** vault secret `GMAIL_APP_PASSWORD` (never raw — use --vault flag)
+
+### Gmail Reader CLI
+
+**Path:** `/home/node/.openclaw/workspace/tools/gmail/reader.js`
+
+**Usage:** `node /home/node/.openclaw/workspace/tools/gmail/reader.js --vault GMAIL_APP_PASSWORD <command> [options]`
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `latest [--from x] [--since min]` | Most recent matching email | `latest --from noreply@vaital.app --since 10` |
+| `search [from:x subject:y]` | Search inbox | `search from:noreply@vaital.app subject:verify` |
+| `read <uid>` | Read full email body | `read 12345` |
+| `extract-link <uid> [--pattern x]` | Extract URLs from email | `extract-link 12345 --pattern vaital` |
+| `extract-code <uid> [--pattern x]` | Extract OTP/verification codes | `extract-code 12345` |
+
+**Flags:** `--from`, `--subject`, `--to`, `--since <minutes>` (default 60 for latest)
+
+**Workflow for verification emails:**
+1. `latest --from <sender> --since 5` — get the UID
+2. `extract-code <uid>` or `extract-link <uid> --pattern <domain>` — get the code/link
+
+**Important:** Always use `--vault GMAIL_APP_PASSWORD`, never pass the password directly.
 
 ---
 

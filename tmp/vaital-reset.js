@@ -1,0 +1,25 @@
+const { chromium } = require('playwright');
+const fs = require('fs');
+const path = require('path');
+(async() => {
+  const outDir = '/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-09';
+  const shotDir = path.join(outDir, 'screenshots');
+  fs.mkdirSync(shotDir, { recursive: true });
+  const results = { checks: [], requests: [], console: [], screenshots: [] };
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  page.on('console', msg => results.console.push({ type: msg.type(), text: msg.text() }));
+  page.on('response', async res => { if (res.status() >= 400) results.requests.push({url:res.url(), status:res.status(), method:res.request().method()}); });
+  const email = 'lisa.hayes+resetcheck@gmail.com';
+  await page.goto('https://vaital.vercel.app/forgot-password', { waitUntil: 'networkidle' });
+  await page.locator('input[type="email"]').fill(email);
+  await page.getByRole('button', { name: /send reset link/i }).click();
+  await page.waitForTimeout(3500);
+  results.checks.push({ name:'forgot-password-submit', url: page.url(), body:(await page.locator('body').innerText()).slice(0,2000), email });
+  const p = path.join(shotDir, 'forgot-password-submit.png');
+  await page.screenshot({ path:p, fullPage:true });
+  results.screenshots.push(p);
+  await browser.close();
+  fs.writeFileSync(path.join(outDir, 'reset-flow.json'), JSON.stringify(results, null, 2));
+  console.log(JSON.stringify(results, null, 2));
+})();

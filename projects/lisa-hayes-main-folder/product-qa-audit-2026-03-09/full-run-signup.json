@@ -1,0 +1,17 @@
+{
+  "email": "my.lisa.hayes.ai+vaitalqa1773068365484@gmail.com",
+  "password": "TestPass123!",
+  "console": [
+    {
+      "type": "log",
+      "text": "[chat] status: ready error: undefined messages: 0"
+    },
+    {
+      "type": "log",
+      "text": "[chat] full messages: []"
+    }
+  ],
+  "requests": [],
+  "body": "VaiTAL\nCreate Account\n\nEnter your credentials to access VaiTAL.\n\nEmail\nPassword\nSign Up\nAlready have an account? Sign In\nCheck Your Email\n\nWe sent a confirmation link to my.lisa.hayes.ai+vaitalqa1773068365484@gmail.com.\n\nOK",
+  "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-09/screenshots/full-run-signup.png"
+}

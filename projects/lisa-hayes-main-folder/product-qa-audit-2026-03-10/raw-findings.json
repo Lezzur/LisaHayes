@@ -1,0 +1,156 @@
+{
+  "findings": [
+    {
+      "name": "invalid_login",
+      "url": "https://vaital.vercel.app/login",
+      "text": "VaiTAL\nWelcome Back\n\nEnter your credentials to access VaiTAL.\n\nEmail\nPassword\nForgot password?\nInvalid login credentials\nSign In\nDon't have an account? Sign Up",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/invalid-login.png"
+    },
+    {
+      "name": "signup_from_login",
+      "url": "https://vaital.vercel.app/login",
+      "text": "VaiTAL\nCreate Account\n\nEnter your credentials to access VaiTAL.\n\nEmail\nPassword\nSign Up\nAlready have an account? Sign In",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/signup-from-login.png"
+    },
+    {
+      "name": "forgot_password",
+      "url": "https://vaital.vercel.app/forgot-password",
+      "text": "VaiTAL\nReset Password\n\nEnter your email and we'll send you a link to reset your password.\n\nEmail\nemail rate limit exceeded\nSend Reset Link\nBack to Sign In",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/forgot-password-after-submit.png"
+    },
+    {
+      "name": "valid_login",
+      "url": "https://vaital.vercel.app/",
+      "text": "VaiTAL\nDashboard\nMy Meds\nYour Health Dashboard\n\nNo data yet. Upload your first lab report or manage your medications.\n\nUpload Report\nMy Meds\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/post-login.png",
+      "cookies": [
+        "sb-neknhlrttunrsqtctrag-auth-token"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "url": "https://vaital.vercel.app/",
+      "text": "VaiTAL\nDashboard\nMy Meds\nmy.lisa.hayes.ai@gmail.com\nSign Out\nYour Health Dashboard\n\nNo data yet. Upload your first lab report or manage your medications.\n\nUpload Report\nMy Meds\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/dashboard.png"
+    },
+    {
+      "name": "upload_page",
+      "url": "https://vaital.vercel.app/upload",
+      "text": "VaiTAL\nDashboard\nMy Meds\nmy.lisa.hayes.ai@gmail.com\nSign Out\nAdd New Results\n\nUpload a photo of your lab report. The AI Lens will extract the data.\n\nUpload File\nSupports JPG, PNG, PDF & Text\nAnalyze Results\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "analyzeDisabledInitially": true,
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/upload-page-initial.png"
+    },
+    {
+      "name": "upload_text_analysis",
+      "url": "https://vaital.vercel.app/upload",
+      "clicked": true,
+      "disabledBefore": false,
+      "text": "VaiTAL\nDashboard\nMy Meds\nmy.lisa.hayes.ai@gmail.com\nSign Out\nAdd New Results\n\nUpload a photo of your lab report. The AI Lens will extract the data.\n\nUpload File\nSupports JPG, PNG, PDF & Text\nProcessing...\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/upload-after-text-analysis.png"
+    },
+    {
+      "name": "my_meds_page",
+      "url": "https://vaital.vercel.app/my-meds",
+      "text": "VaiTAL\nDashboard\nMy Meds\nmy.lisa.hayes.ai@gmail.com\nSign Out\n\nNotifications are disabled\n\nEnable them to get alerts even when this tab is backgrounded.\n\nEnable Alarms\nMy Meds\n\nManage your schedule, medications, and prescriptions\n\nToday's Timeline\n\nNo medications scheduled for today!\n\nActive Medications\nAdd Medication\n\nNo medications added yet.\n\nClick \"Add Medication\" to get started.\n\nRecent Prescriptions\nAdd New Prescription\nUpload Photo\nJPG, PNG, PDF\nAnalyze Prescription\n\nNo prescriptions uploaded yet.\n\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/my-meds.png"
+    },
+    {
+      "name": "add_medication_modal",
+      "url": "https://vaital.vercel.app/my-meds",
+      "text": "VaiTAL\nDashboard\nMy Meds\nmy.lisa.hayes.ai@gmail.com\nSign Out\n\nNotifications are disabled\n\nEnable them to get alerts even when this tab is backgrounded.\n\nEnable Alarms\nMy Meds\n\nManage your schedule, medications, and prescriptions\n\nToday's Timeline\n\nNo medications scheduled for today!\n\nActive Medications\nAdd Medication\nAdd New Medication\nMedication Name\nDosage (Optional)\nSchedule Time\nFrequency\nDaily\n\nCustom days coming soon\n\nCancel\nSave Medication\n\nNo medications added yet.\n\nClick \"Add Medication\" to get started.\n\nRecent Prescriptions\nAdd New Prescription\nUpload Photo\nJPG, PNG, PDF\nAnalyze Prescription\n\nNo prescriptions uploaded yet.\n\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/add-medication-modal.png"
+    },
+    {
+      "name": "prescription_area",
+      "url": "https://vaital.vercel.app/my-meds",
+      "analyzeDisabledInitially": true,
+      "text": "VaiTAL\nDashboard\nMy Meds\nmy.lisa.hayes.ai@gmail.com\nSign Out\n\nNotifications are disabled\n\nEnable them to get alerts even when this tab is backgrounded.\n\nEnable Alarms\nMy Meds\n\nManage your schedule, medications, and prescriptions\n\nToday's Timeline\n\nNo medications scheduled for today!\n\nActive Medications\nAdd Medication\n\nNo medications added yet.\n\nClick \"Add Medication\" to get started.\n\nRecent Prescriptions\nAdd New Prescription\nUpload Photo\nJPG, PNG, PDF\nAnalyze Prescription\n\nNo prescriptions uploaded yet.\n\nMedical Assistant\n\nOnline\n\nHello! I'm your AI Medical Assistant.\n\nI have access to your uploaded results.\n\nAsk me anything about your health.\n\nAI can make mistakes. Consult a doctor for medical advice.",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/prescription-area.png"
+    },
+    {
+      "name": "signout",
+      "url": "https://vaital.vercel.app/login",
+      "text": "VaiTAL\nWelcome Back\n\nEnter your credentials to access VaiTAL.\n\nEmail\nPassword\nForgot password?\nSign In\nDon't have an account? Sign Up",
+      "screenshot": "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-10/screenshots/after-signout.png"
+    }
+  ],
+  "logs": [
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[resp] 400 https://neknhlrttunrsqtctrag.supabase.co/auth/v1/token?grant_type=password",
+    "[console] error: Failed to load resource: the server responded with a status of 400 ()",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[resp] 429 https://neknhlrttunrsqtctrag.supabase.co/auth/v1/recover?redirect_to=https%3A%2F%2Fvaital.vercel.app%2Fauth%2Fcallback%3Fnext%3D%2Freset-password",
+    "[console] error: Failed to load resource: the server responded with a status of 429 ()",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[resp] 500 https://vaital.vercel.app/upload",
+    "[console] error: Failed to load resource: the server responded with a status of 500 ()",
+    "[pageerror] An error occurred in the Server Components render. The specific message is omitted in production builds to avoid leaking sensitive details. A digest property is included on this error instance which may provide additional details about the nature of the error.",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []",
+    "[console] log: [chat] status: ready error: undefined messages: 0",
+    "[console] log: [chat] full messages: []"
+  ]
+}

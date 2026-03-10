@@ -1,0 +1,110 @@
+{
+  "pages": [
+    {
+      "name": "login",
+      "url": "https://vaital.vercel.app/login",
+      "title": "VaiTAL - AI Health Tracker"
+    },
+    {
+      "name": "forgot-password",
+      "url": "https://vaital.vercel.app/forgot-password",
+      "title": "VaiTAL - AI Health Tracker"
+    },
+    {
+      "name": "signup",
+      "url": "https://vaital.vercel.app/login",
+      "title": "VaiTAL - AI Health Tracker"
+    },
+    {
+      "name": "root",
+      "url": "https://vaital.vercel.app/login",
+      "title": "VaiTAL - AI Health Tracker"
+    }
+  ],
+  "issues": [],
+  "notes": [
+    {
+      "loginHeading": "Welcome Back"
+    },
+    {
+      "emptyEmailValidation": "Please fill out this field.",
+      "emptyPasswordValidation": "Please fill out this field."
+    },
+    {
+      "invalidEmailValidation": "Please include an '@' in the email address. 'not-an-email' is missing an '@'."
+    },
+    {
+      "passwordInputTypeAfterToggle": "text"
+    },
+    {
+      "forgotPasswordExcerpt": "VaiTAL\nReset Password\n\nEnter your email and we'll send you a link to reset your password.\n\nEmail\nSend Reset Link\nBack to Sign In"
+    },
+    {
+      "signupExcerpt": "VaiTAL\nCreate Account\n\nEnter your credentials to access VaiTAL.\n\nEmail\nPassword\nSign Up\nAlready have an account? Sign In"
+    },
+    {
+      "headings": [
+        "Create Account"
+      ]
+    },
+    {
+      "links": [
+        {
+          "text": "VaiTAL",
+          "href": "/"
+        },
+        {
+          "text": "Forgot password?",
+          "href": "/forgot-password"
+        }
+      ]
+    }
+  ],
+  "console": [
+    {
+      "type": "log",
+      "text": "[chat] status: ready error: undefined messages: 0"
+    },
+    {
+      "type": "log",
+      "text": "[chat] full messages: []"
+    },
+    {
+      "type": "log",
+      "text": "[chat] status: ready error: undefined messages: 0"
+    },
+    {
+      "type": "log",
+      "text": "[chat] full messages: []"
+    },
+    {
+      "type": "log",
+      "text": "[chat] status: ready error: undefined messages: 0"
+    },
+    {
+      "type": "log",
+      "text": "[chat] full messages: []"
+    },
+    {
+      "type": "log",
+      "text": "[chat] status: ready error: undefined messages: 0"
+    },
+    {
+      "type": "log",
+      "text": "[chat] full messages: []"
+    },
+    {
+      "type": "log",
+      "text": "[chat] status: ready error: undefined messages: 0"
+    },
+    {
+      "type": "log",
+      "text": "[chat] full messages: []"
+    }
+  ],
+  "requests": [],
+  "screenshots": [
+    "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-09/screenshots/forgot-password.png",
+    "/home/node/.openclaw/workspace/projects/lisa-hayes-main-folder/product-qa-audit-2026-03-09/screenshots/signup.png"
+  ]
+}
