@@ -77,3 +77,38 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+
+---
+
+## Browser (Remote — Rick's Windows Machine)
+
+**IMPORTANT: When Rick asks you to open a URL, visit a website, or do anything in a browser, you MUST use the `browser` tool — NOT exec/curl/python/wget. The browser tool controls a real Brave window on Rick's Windows PC that he can watch.**
+
+- **Mode:** Managed browser (Brave) on Rick's Windows PC, proxied via node host
+- **Profile:** `openclaw` (dedicated, isolated from Rick's personal browsing)
+- **How it works:** Browser commands route from the Gateway to the node host to the local Brave instance
+- **Tool name:** `browser` — use actions like navigate, snapshot, click, type, screenshot
+- **Target:** Always use `target="node"` when calling the browser tool
+
+### Workflow for browsing tasks
+
+1. Use `browser` tool with `action="status"` to check if the browser is running
+2. If not running, use `browser` tool with `action="start"`
+3. Use `browser` tool with `action="navigate"` and the URL
+4. Use `browser` tool with `action="snapshot"` to read page content
+5. Use `browser` tool with `action="click"` / `action="type"` for interactions
+
+### If browser commands fail
+
+1. Check browser status first
+2. If not running, start the browser yourself — do NOT ask Rick to restart it
+3. Then retry the original command
+
+### Rules
+
+- **NEVER use exec, curl, python, or wget to browse web pages** — always use the browser tool
+- Never close the browser window yourself — Rick may be watching
+- If a page does not load, check the URL and try again before reporting failure
+- You can open new tabs, navigate, click, type, screenshot, and snapshot
+- The browser is on Rick's local machine, NOT in the container — it has normal internet access

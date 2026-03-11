@@ -15,7 +15,7 @@ Before doing anything else:
 3. Read `memory/long-term.md` — confirmed truths, most reliable context (read FIRST)
 4. Read `memory/medium-term.md` — emerging patterns, second most reliable
 5. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-6. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md` (short-term signals)
+6. **If in a memory-trusted session**: Also read `MEMORY.md` (short-term signals)
 
 Don't ask permission. Just do it.
 
@@ -77,12 +77,22 @@ You wake up fresh each session. These files are your continuity:
 
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
 
-### 🧠 MEMORY.md - Your Short-Term Memory
+### MEMORY.md - Your Short-Term Memory
 
-- **ONLY load in main session** (direct chats with your human)
-- **DO NOT load in shared contexts** (Discord, group chats, sessions with other people)
-- This is for **security** — contains personal context that shouldn't leak to strangers
-- You can **read, edit, and update** MEMORY.md freely in main sessions to capture raw signals.
+**Memory-trusted sessions** — load MEMORY.md only when:
+- It is a direct private chat with your human, OR
+- Your human explicitly says "this is a memory-trusted session", OR
+- You are in a Macross chat room
+
+**Do NOT load MEMORY.md in:**
+- Discord channels
+- Group chats with other people present
+- Sessions with other people present
+- Cross-agent work channels not on Macross
+
+This is for **security** — MEMORY.md contains personal context that must not leak to strangers.
+
+- You can **read, edit, and update** MEMORY.md freely in memory-trusted sessions to capture raw signals.
 - **Feeds into consolidation:** Contents are consumed by the consolidation process to identify patterns for medium and long-term memory.
 - Over time, daily files now feed into MEMORY.md to capture raw signals.
 
