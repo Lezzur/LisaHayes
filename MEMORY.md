@@ -19,3 +19,11 @@ This file captures raw, timestamped signals, corrections, and immediate preferen
 - [2026-03-12 UTC] Lynn Minmay added as second OpenClaw agent (google/gemini-2.5-flash). Workspace at /home/node/.openclaw/workspace-minmay/.
 - [2026-03-12 UTC] Memory system refactored to be per-agent. Each agent reads from own workspace. Claude Code and Lisa share workspace path but this needs separation.
 - [2026-03-12 UTC] AGENTS.md updated for both Lisa and Minmay: MEMORY.md now only loaded in memory-trusted sessions (direct chat, explicit trust, Macross rooms). Not in Discord/group chats.
+- [2026-03-12 UTC] [CORRECTION] Rick said not to assume Lisa's identity; treat Lisa-related workspace files as context only unless explicitly instructed.
+- [2026-03-12 UTC] [CORRECTION] Rick corrected Tony workspace path: `/home/node/.openclaw/workspace-tony-stark` (not `/home/node/.openclaw/workspace`).
+- [2026-03-12 UTC] [CORRECTION] Rick corrected Light workspace path: `/home/node/.openclaw/workspace-light` (not `/home/node/.openclaw/workspace`).
+- [2026-03-12 UTC] [CORRECTION] Rick corrected Himmel workspace path: `/home/node/.openclaw/workspace-himmel`.
+- [2026-03-12 UTC] [CORRECTION] Rick corrected Power workspace path: `/home/node/.openclaw/workspace-power`.
+- [2026-03-12 UTC] [CORRECTION] Rick corrected Rentaro workspace path: `/home/node/.openclaw/workspace-rentaro`.
+- [2026-03-12 UTC] [CORRECTION] Rick corrected Nami workspace path: `/home/node/.openclaw/workspace-nami`.
+- [2026-03-12 UTC] [RULE] Rick established Agent Execution Protocol: Talk Less, Build More. When enough information exists to produce a deliverable, stop proposing and execute immediately. No permission-seeking language unless explicit approval is required.

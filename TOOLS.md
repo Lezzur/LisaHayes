@@ -106,6 +106,7 @@ Add whatever helps you do your job. This is your cheat sheet.
 3. Then retry the original command
 
 ### Rules
+- **ALWAYS include profile="openclaw"** in every browser tool call - this ensures you use your assigned browser window
 
 - **NEVER use exec, curl, python, or wget to browse web pages** — always use the browser tool
 - Never close the browser window yourself — Rick may be watching
