@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Storyboard AI — Technical Build Spec</title>
+<style>
+  body { font-family: Inter, Arial, sans-serif; color: #111; margin: 38px; line-height: 1.4; font-size: 11px; }
+  h1,h2,h3,h4 { margin: 0.9em 0 0.35em; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  h3 { font-size: 14px; }
+  h4 { font-size: 12px; }
+  p, li { margin: 0.25em 0; }
+  ul { margin-top: 0.25em; }
+  code { background:#f4f4f4; padding:1px 4px; border-radius:4px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0 14px; }
+  th,td { border:1px solid #ccc; padding:6px; vertical-align:top; }
+  th { background:#f7f7f7; text-align:left; }
+  .small { font-size:10px; color:#555; }
+  .pagebreak { page-break-before: always; }
+</style>
+</head>
+<body>
+<h1>Storyboard AI — Technical Build Spec</h1>
+<p><strong>Version:</strong> V1 engineering build spec<br>
+<strong>Status:</strong> Ready for implementation<br>
+<strong>Purpose:</strong> Translate the settled behavioral contract in the Product Brief V2 and Implementation Pack into an engineering blueprint a team can build from immediately.</p>
+<p class="small">This document intentionally does not restate product strategy or behavioral rules except by reference to implementation-pack IDs such as <code>M-05</code>, <code>F-04</code>, and <code>AT-15</code>.</p>
+
+<h2>0. Engineering Principles</h2>
+<ul>
+  <li><strong>V1 architecture:</strong> modular monolith, not microservices.</li>
+  <li><strong>Commands mutate canonical state. Projections derive visible truth.</strong></li>
+  <li><strong>SSE signals change. <code>GET /scenes/:id/workspace</code> delivers truth.</strong></li>
+  <li><strong>Authoritative state changes are transactional; generated artifacts are asynchronous, snapshot-based, idempotent side effects.</strong></li>
+  <li><strong>Provider output is provisional until stored, validated, version-checked, and promoted.</strong></li>
+  <li><strong>A panel is a logical record. An image is a versioned asset. Promotion changes pointers, not files.</strong></li>
+</ul>
+
+<h2>1. System Architecture</h2>
+<h3>1.1 V1 deployment model</h3>
+<ul>
+  <li><strong>Web app:</strong> Next.js 15 App Router frontend.</li>
+  <li><strong>API + domain backend:</strong> NestJS TypeScript app in the same repo and deploy unit.</li>
+  <li><strong>Worker:</strong> separate process from the same codebase for async jobs triggered by <code>M-05</code>, <code>M-12</code>, and <code>M-15</code>.</li>
+  <li><strong>Primary DB:</strong> PostgreSQL 16.</li>
+  <li><strong>Queue / locks:</strong> Redis + BullMQ.</li>
+  <li><strong>Blob storage:</strong> S3/R2-compatible object store.</li>
+</ul>
+
+<h3>1.2 Why modular monolith</h3>
+<table>
+<tr><th>Option</th><th>Buys</th><th>Costs</th><th>Recommendation</th></tr>
+<tr><td>Modular monolith</td><td>Fastest iteration, shared types, easier tracing, lower infra complexity, coherent transactions</td><td>Less deploy isolation, larger codebase boundaries to enforce manually</td><td><strong>Choose for V1</strong></td></tr>
+<tr><td>Microservices</td><td>Independent scaling, harder isolation</td><td>Schema churn, distributed tracing overhead, more failure modes, slower team velocity</td><td>Defer until post-V1 scale pressure</td></tr>
+</table>
+
+<h3>1.3 Internal module boundaries</h3>
+<ol>
+  <li><code>workspace-api</code> — command endpoints, workspace projection endpoint, SSE.</li>
+  <li><code>ingest-parse</code> — screenplay ingest, format detection, parse, confidence scoring.</li>
+  <li><code>shot-planner</code> — beat annotations, shot recommendations, rationale generation, linting.</li>
+  <li><code>render-orchestrator</code> — render intent creation, asset prep, queueing, promotion, validation.</li>
+  <li><code>export</code> — export snapshot creation, PDF generation, signed delivery.</li>
+  <li><code>projection</code> — derived-state engine and <code>SceneWorkspace</code> assembly.</li>
+  <li><code>telemetry</code> — event capture, outbox dispatch, monitoring hooks.</li>
+  <li><code>auth-access</code> — authentication, project authorization, signed asset policies.</li>
+</ol>
+
+<h3>1.4 State placement</h3>
+<ul>
+  <li><strong>Canonical state:</strong> Postgres.</li>
+  <li><strong>Ephemeral state:</strong> Redis queue metadata, locks, rate-limit counters.</li>
+  <li><strong>Artifacts:</strong> object store only.</li>
+  <li><strong>Projection cache:</strong> optional materialized/cached scene workspace keyed by <code>scene_id + scene_version</code>; rebuildable from canonical rows.</li>
+</ul>
+
+<h3>1.5 Command/query separation</h3>
+<ul>
+  <li>Command endpoints mutate narrow aggregates with optimistic concurrency and idempotency.</li>
+  <li>Queries read a server-projected <code>SceneWorkspace</code> DTO.</li>
+  <li>The client never derives stale, blocked, failed, or export-ready truth from raw rows.</li>
+</ul>
+
+<h3>1.6 Async architecture</h3>
+<ul>
+  <li><strong>Queues:</strong> <code>render-high</code> (for <code>M-12</code>), <code>render-normal</code> (for <code>M-05</code>), <code>export</code>.</li>
+  <li><strong>Outbox:</strong> DB outbox table for projection refresh and telemetry dispatch after commit.</li>
+  <li><strong>Sweeper jobs:</strong> recover committed mutations without queued jobs, completed jobs without projection refresh, stored assets without validation record.</li>
+</ul>
+
+<h2>2. Technology Stack</h2>
+<table>
+<tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+<tr><td>Frontend</td><td>Next.js 15, React, TypeScript</td><td>Strong app-router ergonomics, SSR, route handlers, unified TS stack</td></tr>
+<tr><td>State/query</td><td>TanStack Query + Zustand</td><td>Query cache for server data, minimal client UI state for local controls only</td></tr>
+<tr><td>UI</td><td>Tailwind, shadcn/ui, dnd-kit</td><td>Fast internal tool velocity, accessible primitives, reorder interactions</td></tr>
+<tr><td>Backend</td><td>NestJS + TypeScript</td><td>Structured modules, DTO validation, worker sharing, same language end to end</td></tr>
+<tr><td>ORM</td><td>Prisma</td><td>Fast schema iteration, typed access, migration support</td></tr>
+<tr><td>DB</td><td>PostgreSQL 16</td><td>Authoritative relational state, transactions, JSONB where useful, enums</td></tr>
+<tr><td>Queue</td><td>Redis + BullMQ</td><td>Simple reliable job execution and priority queues</td></tr>
+<tr><td>Storage</td><td>AWS S3 or Cloudflare R2</td><td>Cheap immutable blobs and signed URL delivery</td></tr>
+<tr><td>Auth</td><td>Clerk or Auth.js magic link</td><td>Simplicity wins for V1</td></tr>
+<tr><td>PDF</td><td>PDFKit</td><td>Deterministic layout and pagination; avoid DOM screenshot export</td></tr>
+<tr><td>Observability</td><td>Sentry + OpenTelemetry + structured logs</td><td>Trace commands, jobs, failures, and provider behavior</td></tr>
+</table>
+
+<h3>2.1 Image generation provider strategy</h3>
+<ul>
+  <li>Implement one render adapter interface with exactly two concrete providers: one primary, one fallback.</li>
+  <li>Candidate primary: provider with strongest multi-image conditioning and continuity adherence in benchmark.</li>
+  <li>Required adapter methods: <code>buildPromptBundle()</code>, <code>buildReferenceSet()</code>, <code>submitRenderJob()</code>, <code>normalizeProviderResponse()</code>.</li>
+  <li>Run a provider evaluation gate before locking primary: 20-scene benchmark on shot adherence, continuity, retry drift, cost, latency.</li>
+</ul>
+
+<h2>3. Database Schema</h2>
+<h3>3.1 Core entities</h3>
+<ul>
+  <li><code>users</code></li>
+  <li><code>projects</code></li>
+  <li><code>style_profiles</code></li>
+  <li><code>scripts</code></li>
+  <li><code>script_lines</code> (line map / spans)</li>
+  <li><code>scenes</code></li>
+  <li><code>beats</code></li>
+  <li><code>shots</code></li>
+  <li><code>panels</code> (stable logical entities)</li>
+  <li><code>panel_variants</code> (append-only history)</li>
+  <li><code>grounding_cards</code></li>
+  <li><code>grounding_card_images</code></li>
+  <li><code>entity_occurrences</code></li>
+  <li><code>shot_grounding_cards</code></li>
+  <li><code>panel_grounding_cards_snapshot</code></li>
+  <li><code>render_jobs</code></li>
+  <li><code>render_input_snapshots</code></li>
+  <li><code>export_jobs</code></li>
+  <li><code>export_snapshots</code></li>
+  <li><code>assets</code></li>
+  <li><code>asset_lineage</code></li>
+  <li><code>asset_bundles</code> (optional normalized reference bundles)</li>
+  <li><code>mutation_requests</code> (idempotency + outcome)</li>
+  <li><code>workspace_projection_cache</code> (optional)</li>
+  <li><code>telemetry_events</code></li>
+  <li><code>outbox_events</code></li>
+</ul>
+
+<h3>3.2 Recommended columns by table</h3>
+<h4>projects</h4>
+<ul><li><code>id</code>, <code>workspace_owner_id</code>, <code>title</code>, <code>genre_preset</code>, <code>style_profile_id</code>, <code>created_at</code></li></ul>
+<h4>scripts</h4>
+<ul><li><code>id</code>, <code>project_id</code>, <code>raw_text</code>, <code>format_detected</code>, <code>parse_status</code>, <code>parse_confidence</code>, <code>anomaly_count</code>, <code>created_at</code></li></ul>
+<h4>scenes</h4>
+<ul><li><code>id</code>, <code>project_id</code>, <code>script_id</code>, <code>order_index</code>, <code>slugline</code>, <code>confidence_state</code>, <code>export_readiness</code>, <code>scene_version</code>, <code>projection_version</code>, <code>last_mutation_ref</code></li></ul>
+<h4>beats</h4>
+<ul><li><code>id</code>, <code>scene_id</code>, <code>order_index</code>, <code>source_span_start</code>, <code>source_span_end</code>, <code>summary</code>, <code>semantic_tags_json</code>, <code>confidence_state</code></li></ul>
+<h4>shots</h4>
+<ul><li><code>id</code>, <code>scene_id</code>, <code>beat_id</code>, <code>order_index</code>, <code>shot_type</code>, <code>framing</code>, <code>angle</code>, <code>intent_notes</code>, <code>rationale</code>, <code>continuity_note</code>, <code>approval_state</code>, <code>stale_state</code>, <code>stale_reason_code</code>, <code>warning_reason_code</code>, <code>shot_version</code></li></ul>
+<h4>panels</h4>
+<ul><li><code>id</code>, <code>scene_id</code>, <code>shot_id</code>, <code>order_index</code>, <code>current_variant_id</code>, <code>render_state</code>, <code>continuity_state</code>, <code>stale_state</code>, <code>stale_reason_code</code>, <code>warning_reason_code</code>, <code>panel_version</code>, <code>is_anchor_pinned</code></li></ul>
+<h4>panel_variants</h4>
+<ul><li><code>id</code>, <code>panel_id</code>, <code>image_asset_id</code>, <code>debug_manifest_asset_id</code>, <code>render_input_snapshot_id</code>, <code>validation_status</code>, <code>promotion_status</code>, <code>provider_name</code>, <code>provider_model</code>, <code>seed</code>, <code>attempt_number</code>, <code>created_at</code></li></ul>
+<h4>render_input_snapshots</h4>
+<ul><li><code>id</code>, <code>project_id</code>, <code>scene_id</code>, <code>beat_id</code>, <code>shot_id</code>, <code>panel_id</code>, <code>mutation_ref</code>, <code>scene_version_at_enqueue</code>, <code>shot_version_at_enqueue</code>, <code>panel_version_at_enqueue</code>, <code>style_profile_snapshot_json</code>, <code>shot_spec_snapshot_json</code>, <code>grounding_snapshot_json</code>, <code>continuity_context_json</code>, <code>prompt_text</code>, <code>negative_prompt</code>, <code>reference_bundle_id</code>, <code>render_intent_hash</code></li></ul>
+<h4>assets</h4>
+<ul><li><code>asset_id</code>, <code>object_key</code>, <code>kind</code>, <code>mime_type</code>, <code>bytes</code>, <code>sha256</code>, <code>width</code>, <code>height</code>, <code>created_at</code></li></ul>
+
+<h3>3.3 Enums</h3>
+<ul>
+  <li><code>approval_state</code></li>
+  <li><code>confidence_state</code></li>
+  <li><code>continuity_state</code></li>
+  <li><code>stale_state</code></li>
+  <li><code>render_state</code></li>
+  <li><code>export_readiness</code></li>
+  <li>Reason-code enums: <code>stale_reason_code</code>, <code>warning_reason_code</code>, <code>blocked_reason_code</code></li>
+</ul>
+
+<h3>3.4 Foreign-key discipline</h3>
+<ul>
+  <li><code>panel_variants.image_asset_id -&gt; assets.asset_id</code></li>
+  <li><code>panel_variants.normalized_reference_bundle_id -&gt; asset_bundles.id</code> (if used)</li>
+  <li><code>export_snapshots.pdf_asset_id -&gt; assets.asset_id</code></li>
+  <li><code>grounding_card_images.asset_id -&gt; assets.asset_id</code></li>
+  <li>Workflow tables do not store raw object keys except optional debug mirrors.</li>
+</ul>
+
+<h3>3.5 Indexes and query patterns</h3>
+<ul>
+  <li><code>beats(scene_id, order_index)</code></li>
+  <li><code>shots(scene_id, order_index)</code></li>
+  <li><code>panels(scene_id, order_index)</code></li>
+  <li><code>panels(stale_state, scene_id)</code></li>
+  <li><code>shots(approval_state, scene_id)</code></li>
+  <li><code>render_jobs(status, priority, created_at)</code></li>
+  <li><code>panel_variants(panel_id, created_at desc)</code></li>
+  <li><code>entity_occurrences(scene_id, entity_type, entity_id)</code></li>
+  <li><code>mutation_requests(project_id, mutation_ref, idempotency_key)</code> unique</li>
+  <li><code>assets(sha256)</code> unique or semi-unique depending on dedupe policy</li>
+</ul>
+<p><strong>Workspace query:</strong> one scene hydration endpoint returns scene, ordered beats, ordered shots, ordered logical panels, current variant metadata only, active jobs, stale/warning/blocker reason codes, export readiness, mutation provenance, and scene/entity versions.</p>
+
+<h3>3.6 Storage strategy for images</h3>
+<ul>
+  <li>All binaries in object storage.</li>
+  <li>Immutable key shape: <code>projects/{project_id}/scenes/{scene_id}/panels/{panel_id}/variants/{variant_id}/{asset_kind}</code>.</li>
+  <li>Asset kinds: <code>original</code>, <code>normalized</code>, <code>thumb_sm</code>, <code>thumb_md</code>, <code>export_pdf</code>, optional <code>debug_manifest.json</code>.</li>
+  <li>Never overwrite in place.</li>
+</ul>
+
+<h3>3.7 Migrations</h3>
+<ul>
+  <li>Use forward-only Prisma migrations.</li>
+  <li>Ship enums and core tables first.</li>
+  <li>Backfill nullable fields before adding not-null constraints.</li>
+  <li>Never make asset object keys part of business logic; IDs only.</li>
+</ul>
+
+<h2>4. API Surface</h2>
+<h3>4.1 Read side</h3>
+<ul>
+  <li><code>GET /scenes/:id/workspace</code> — authoritative <code>SceneWorkspace</code> DTO.</li>
+  <li><code>GET /scenes/:id/events</code> — SSE notification stream only.</li>
+</ul>
+
+<h3>4.2 SceneWorkspace DTO</h3>
+<ul>
+  <li>scene summary + versions</li>
+  <li>ordered beats / shots / panels</li>
+  <li>current variant metadata only</li>
+  <li>active job statuses</li>
+  <li>stale/warning/blocker reason codes</li>
+  <li>export readiness summary</li>
+  <li>mutation provenance summary</li>
+  <li><code>projection_version</code> and <code>generated_at</code></li>
+</ul>
+
+<h3>4.3 Command endpoints</h3>
+<table>
+<tr><th>ID</th><th>Endpoint</th><th>Notes</th></tr>
+<tr><td>M-01</td><td><code>POST /projects/:id/script:parse</code></td><td>ingest + parse screenplay</td></tr>
+<tr><td>M-02</td><td><code>POST /scenes/:id/shot-plan:generate</code></td><td>generate shot plan</td></tr>
+<tr><td>M-03</td><td><code>POST /shots/:id/approve</code></td><td>approve single shot</td></tr>
+<tr><td>M-04</td><td><code>POST /scenes/:id/shots:approve-all</code></td><td>bulk approval</td></tr>
+<tr><td>M-05</td><td><code>POST /scenes/:id/render</code></td><td>enqueue scene render</td></tr>
+<tr><td>M-06</td><td><code>POST /shots/:id/revoke</code></td><td>revoke approval</td></tr>
+<tr><td>M-07</td><td><code>PATCH /shots/:id/spec</code></td><td>editable shot fields only</td></tr>
+<tr><td>M-08</td><td><code>POST /scenes/:id/shots:reorder</code></td><td>reorder shots</td></tr>
+<tr><td>M-09</td><td><code>POST /scenes/:id/shots</code></td><td>add shot</td></tr>
+<tr><td>M-10</td><td><code>DELETE /shots/:id</code></td><td>delete shot</td></tr>
+<tr><td>M-11</td><td><code>POST /beats/:id:split</code></td><td>split beat</td></tr>
+<tr><td>M-12</td><td><code>POST /panels/:id/regenerate</code></td><td>targeted panel regen</td></tr>
+<tr><td>M-13</td><td><code>POST /panels/:id/pin-anchor</code></td><td>pin continuity anchor</td></tr>
+<tr><td>M-14</td><td><code>PATCH /grounding-cards/:id</code></td><td>grounding update</td></tr>
+<tr><td>M-15</td><td><code>POST /projects/:id/export</code></td><td>enqueue export</td></tr>
+</table>
+
+<h3>4.4 Command request rules</h3>
+<ul>
+  <li>Nontrivial writes require <code>Idempotency-Key</code>: <code>M-01</code>, <code>M-02</code>, <code>M-05</code>, <code>M-12</code>, <code>M-15</code>.</li>
+  <li><code>M-06</code> through <code>M-14</code> require expected version in body.</li>
+  <li><code>M-07</code> editable fields only: <code>shot_type</code>, <code>framing</code>, <code>angle</code>, <code>intent_notes</code>.</li>
+  <li>Derived fields like rationale, stale markers, blockers, and approval state are server-owned.</li>
+</ul>
+
+<h3>4.5 Command response shape</h3>
+<pre>{
+  "status": "applied|rejected|replayed",
+  "mutation_ref": "M-05",
+  "target_ids": {"scene_id": "...", "panel_ids": ["..."]},
+  "entity_versions": {"scene_version": 12, "panel_version": 4},
+  "invalidation_summary": {...},
+  "blocker_summary": {...},
+  "workspace_summary": {...},
+  "job": {"job_id": "...", "status": "queued"}
+}</pre>
+
+<h3>4.6 Error model</h3>
+<table>
+<tr><th>Error</th><th>HTTP</th><th>Maps to</th></tr>
+<tr><td><code>VERSION_CONFLICT</code></td><td>409</td><td>conflicts on M-06..M-14</td></tr>
+<tr><td><code>IDEMPOTENCY_KEY_REUSED_WITH_DIFFERENT_PAYLOAD</code></td><td>422</td><td>command replay safety</td></tr>
+<tr><td><code>PARSE_VALIDATION_FAILED</code></td><td>422</td><td>F-01 / F-02</td></tr>
+<tr><td><code>RENDER_VALIDATION_FAILED</code></td><td>422 or job failure</td><td>F-04 / F-06</td></tr>
+<tr><td><code>RENDER_PROVIDER_FAILED</code></td><td>502 or job failure</td><td>F-05</td></tr>
+<tr><td><code>EXPORT_BLOCKED</code></td><td>409</td><td>F-07</td></tr>
+<tr><td><code>ASSET_INTEGRITY_FAILED</code></td><td>500 / job failure</td><td>storage integrity</td></tr>
+</table>
+
+<h3>4.7 SSE contract</h3>
+<ul>
+  <li>SSE is notification only, never authoritative state transport.</li>
+  <li>Allowed uses: badges for queued/started, spinner presence, refresh trigger.</li>
+  <li>Not allowed: patching canonical freshness, promoting variants, clearing blockers.</li>
+</ul>
+<pre>event types:
+- projection.updated
+- job.queued
+- job.started
+- job.completed
+- job.completed_stale
+- job.failed
+- validation.failed
+- export.completed
+
+required envelope:
+- event_id
+- scene_id
+- scene_version
+- projection_version
+- event_type
+- emitted_at
+- job_id (if applicable)
+- mutation_ref | job_ref
+- affected_ids
+- reason_codes
+</pre>
+<ul>
+  <li>Client applies transient updates only if <code>projection_version &gt; current_projection_version</code>.</li>
+  <li>If versions skip, regress, or reference unknown entities, client does full refetch.</li>
+  <li>After <code>job.completed</code>, <code>job.completed_stale</code>, <code>validation.failed</code>, <code>export.completed</code>: refetch by default.</li>
+</ul>
+
+<h2>5. Rendering Pipeline</h2>
+<h3>5.1 Core rule</h3>
+<p>The worker receives a fully materialized, persisted, versioned <code>RenderIntent</code> / <code>RenderInputSnapshot</code>, never live workspace state.</p>
+
+<h3>5.2 RenderIntent fields</h3>
+<ul>
+  <li><code>project_id, scene_id, beat_id, shot_id, panel_id</code></li>
+  <li><code>mutation_ref</code> (<code>M-05</code> or <code>M-12</code>)</li>
+  <li><code>style_profile_snapshot</code></li>
+  <li><code>shot_spec_snapshot</code></li>
+  <li><code>grounding_refs[]</code></li>
+  <li><code>continuity_context</code> (prior panel refs + pinned anchor + continuity targets)</li>
+  <li><code>negative_constraints</code></li>
+  <li><code>seed_policy</code></li>
+  <li><code>output_tier</code></li>
+  <li><code>attempt_number</code></li>
+  <li><code>scene/shot/panel versions at enqueue</code></li>
+  <li><code>reference_bundle_id</code></li>
+  <li><code>render_intent_hash</code></li>
+</ul>
+
+<h3>5.3 Prompt construction</h3>
+<p>Each render request is assembled from four layers:</p>
+<ol>
+  <li><strong>Shot block</strong> — literal approved shot spec from <code>M-05</code>/<code>M-12</code>; renderer must not improvise shot grammar.</li>
+  <li><strong>World block</strong> — style profile snapshot plus grounding card traits and reference handles.</li>
+  <li><strong>Continuity block</strong> — preserve facts from anchor panel, prior panel, and structured continuity targets.</li>
+  <li><strong>Constraint block</strong> — negative prompt and do-not-change list.</li>
+</ol>
+<p>Prompt payload shape:</p>
+<ul>
+  <li><strong>System:</strong> cinematic storyboard renderer; obey shot grammar exactly.</li>
+  <li><strong>Developer:</strong> preserve anchors, do not add new characters/props, match framing/angle/type exactly.</li>
+  <li><strong>User:</strong> beat content, emotional intent, scene context.</li>
+  <li><strong>Attachments:</strong> grounding card images, optional pinned anchor, optional prior accepted panel.</li>
+</ul>
+
+<h3>5.4 Continuity enforcement</h3>
+<p>Do not rely on prompt text or seeds alone. Use layered continuity:</p>
+<ol>
+  <li><strong>Reference image conditioning</strong> — canonical character/location/prop refs.</li>
+  <li><strong>Pinned anchor support</strong> from <code>M-13</code> with higher-weight image reference.</li>
+  <li><strong>Structured continuity facts</strong> — wardrobe, handedness, prop possession, time of day, location features, camera side.</li>
+  <li><strong>Canonical descriptors</strong> — generated once and reused verbatim.</li>
+  <li><strong>Shot-local seed reuse</strong> only as retry stabilizer.</li>
+  <li><strong>Post-render validation</strong> — vision pass for mismatch/drift.</li>
+</ol>
+<p><strong>Entity continuity graph:</strong> internally model relationships among characters, props, locations, shots, panels, and anchors so <code>M-13</code>/<code>M-14</code> invalidation and continuity selection stay deterministic instead of conditional spaghetti.</p>
+
+<h3>5.5 Local-edit guarantee for M-12</h3>
+<ul>
+  <li><code>M-12</code> creates a new <code>panel_variants</code> row for the target panel only.</li>
+  <li>Neighbor panels are never re-queued implicitly.</li>
+  <li>Neighbor prompt bundles are never recomputed.</li>
+  <li>Neighbor state rows are never mutated during regen.</li>
+  <li>Allowed writes: target panel current variant pointer (after promotion), target continuity assessment, append-only variant history, telemetry.</li>
+  <li>Any downstream healing must be a separate explicit mutation, not hidden behavior.</li>
+</ul>
+
+<h3>5.6 Render job flow</h3>
+<ol>
+  <li>Command transaction writes mutation row, invalidation results, render snapshot, job stub.</li>
+  <li>After commit, outbox or queue dispatch enqueues render job with idempotency key.</li>
+  <li>Worker loads snapshot and asset bundle.</li>
+  <li>Asset preflight normalizer prepares provider-safe references.</li>
+  <li>Provider call executes.</li>
+  <li>Returned artifact stored in object storage and recorded in <code>assets</code>.</li>
+  <li>Validation runs.</li>
+  <li>Version check runs against current scene/shot/panel versions.</li>
+  <li>If validation and version match pass, transactional promotion updates <code>current_variant_id</code>.</li>
+  <li>Projection refresh + telemetry emit.</li>
+</ol>
+
+<h3>5.7 Asset preflight normalizer</h3>
+<ul>
+  <li>Fetch signed source asset</li>
+  <li>Validate MIME, dimensions, file size</li>
+  <li>Strip EXIF/metadata</li>
+  <li>Transcode to provider-safe format</li>
+  <li>Optionally crop/focus</li>
+  <li>Generate deterministic hash</li>
+  <li>Write normalized asset + lineage row</li>
+</ul>
+
+<h3>5.8 Validation</h3>
+<p>Two-stage validator:</p>
+<ol>
+  <li><strong>Cheap structural validator</strong>: corruption, dimensions, blank/low-detail detection, basic shot class check.</li>
+  <li><strong>Semantic validator</strong>: expected entities present, forbidden entities absent, shot adherence, continuity anchor preservation.</li>
+</ol>
+<p>If stage 1 fails, skip stage 2. If validation fails, artifact remains stored but non-current and maps to <code>F-04</code> or <code>F-06</code>.</p>
+
+<h3>5.9 Queue policy</h3>
+<ul>
+  <li><strong>Priority:</strong> <code>M-12</code> local regen outranks <code>M-05</code> scene render.</li>
+  <li><strong>Concurrency:</strong> start 2–4 concurrent renders per provider budget lane.</li>
+  <li><strong>Timeout:</strong> panel render 90s hard timeout.</li>
+  <li><strong>Retries:</strong> provider/network errors: 2 with exponential backoff; deterministic validation mismatch: 1 constrained retry; repeated failure -&gt; terminal job failure.</li>
+  <li><strong>Idempotency:</strong> dedupe on <code>render_intent_hash</code>.</li>
+</ul>
+
+<h3>5.10 Promotion preconditions</h3>
+<ul>
+  <li>asset row exists</li>
+  <li>object upload confirmed</li>
+  <li>hash verified</li>
+  <li>validation record exists and passed</li>
+  <li>completion version check passed</li>
+</ul>
+<p>Otherwise status is non-promotable: <code>FAILED_STORAGE</code>, <code>FAILED_VALIDATION</code>, or <code>COMPLETED_STALE</code>.</p>
+
+<h3>5.11 Cost model</h3>
+<ul>
+  <li>Parse: &lt; $0.02 / scene</li>
+  <li>Shot plan: &lt; $0.05 / scene</li>
+  <li>Panel rough render: $0.03–0.08</li>
+  <li>Panel presentation render: $0.08–0.25</li>
+  <li>8-panel scene render envelope: roughly $0.64–2.00 before retry/export overhead</li>
+</ul>
+
+<h2>6. Parse Pipeline</h2>
+<h3>6.1 Format detection and validation for M-01</h3>
+<ul>
+  <li>Support Fountain first; accept plain text screenplay-ish input with heuristics.</li>
+  <li>Rule-based detection for sluglines, dialogue blocks, action blocks, parentheticals, transitions.</li>
+  <li>Validation failures map to <code>F-01</code>/<code>F-02</code> with scene/line-level reason codes.</li>
+</ul>
+
+<h3>6.2 Hybrid parse approach</h3>
+<ol>
+  <li><strong>Deterministic parse</strong> for structural segmentation.</li>
+  <li><strong>LLM normalization pass</strong> for malformed repairs, beat extraction, entity normalization.</li>
+  <li><strong>Confidence scoring pass</strong> combining structural certainty, model certainty, entity resolution certainty, and anomaly count.</li>
+</ol>
+
+<h3>6.3 Confidence methodology</h3>
+<p><code>scene_confidence = weighted(rule_confidence, llm_confidence, entity_resolution_confidence, anomaly_penalty)</code></p>
+<ul>
+  <li>Rule confidence: structural parser match quality.</li>
+  <li>LLM confidence: model self-report + schema completion quality.</li>
+  <li>Entity resolution confidence: normalized entity linkage certainty.</li>
+  <li>Anomaly penalty: malformed spans, conflicting scene boundaries, unresolved names.</li>
+</ul>
+
+<h3>6.4 Domain mapping</h3>
+<ul>
+  <li>script text -&gt; <code>scripts</code> + <code>script_lines</code></li>
+  <li>scene boundaries -&gt; <code>scenes</code></li>
+  <li>beat spans -&gt; <code>beats</code></li>
+  <li>entity mentions -&gt; <code>entity_occurrences</code> + grounding seed candidates</li>
+  <li>confidence and provenance stored at scene/beat/entity level</li>
+</ul>
+
+<h2>7. Shot Plan Generation</h2>
+<h3>7.1 Two-stage pipeline for M-02</h3>
+<ol>
+  <li><strong>Beat annotation stage</strong>: derive semantic features — subject, reveal/withhold, motion, emotional intensity, geography, POV relevance, continuity burden.</li>
+  <li><strong>Recommendation stage</strong>: structured LLM output produces <code>ShotRecommendation[]</code>.</li>
+</ol>
+
+<h3>7.2 Output schema</h3>
+<ul>
+  <li><code>shot_type</code></li>
+  <li><code>framing</code></li>
+  <li><code>angle</code></li>
+  <li><code>intent</code></li>
+  <li><code>rationale</code></li>
+  <li><code>continuity_note</code></li>
+  <li><code>source_beat_span_ids[]</code></li>
+</ul>
+
+<h3>7.3 Rationale generation</h3>
+<ul>
+  <li>Rationale must cite concrete beat facts, not generic cinematography filler.</li>
+  <li>Reject and regenerate rationale if it lacks beat evidence.</li>
+  <li>Store source beat span references for auditability.</li>
+</ul>
+
+<h3>7.4 Genre preset influence</h3>
+<ul>
+  <li>Genre preset acts as a weighting layer, not a template override.</li>
+  <li>It influences preferred framing frequency, motion tolerance, intimacy distance, and reveal pacing.</li>
+</ul>
+
+<h3>7.5 Anti-cliché guardrail</h3>
+<ul>
+  <li>Negative prompt/rules: avoid defaulting to establishing + shot-reverse-shot unless beat structure justifies it.</li>
+  <li>Lint output for repeated shot types, boilerplate rationale phrases, monotony score.</li>
+  <li>If lint fails, regenerate before persisting rows.</li>
+</ul>
+
+<h2>8. Infrastructure, Performance, and Cost</h2>
+<h3>8.1 Expected latency envelopes</h3>
+<table>
+<tr><th>Pipeline stage</th><th>Target latency</th></tr>
+<tr><td>M-01 parse</td><td>2–10s per scene depending on script length</td></tr>
+<tr><td>M-02 shot plan</td><td>2–8s per scene</td></tr>
+<tr><td>M-05 panel render</td><td>15–60s per panel typical, 90s hard timeout</td></tr>
+<tr><td>M-12 local regen</td><td>same as panel render but priority queue</td></tr>
+<tr><td>M-15 export</td><td>5–20s typical, 60s hard timeout</td></tr>
+</table>
+
+<h3>8.2 V1 scaling assumptions</h3>
+<ul>
+  <li>Acceptable: low hundreds of active projects, dozens of concurrent render jobs, one-scene-focused usage pattern.</li>
+  <li>Likely breakpoints: provider rate limits, render spend spikes, large-project workspace hydration if projection caching is absent.</li>
+  <li>Hard V1 limits: max screenplay pages, max scenes/project, max reference images/grounding card, max concurrent renders/user, max regen burst/minute.</li>
+</ul>
+
+<h3>8.3 Monitoring and alerting</h3>
+<ul>
+  <li>Track all command completions by <code>mutation_ref</code>.</li>
+  <li>Alert on provider error spikes, queue backlog, validation failure rate, stale-on-arrival rate, export failure rate, asset integrity failures.</li>
+  <li>Tie telemetry event names to <code>M-xx</code>, <code>AT-xx</code>, <code>F-xx</code> references.</li>
+</ul>
+
+<h2>9. Security and Data Handling</h2>
+<ul>
+  <li><strong>User isolation:</strong> every project scoped by <code>workspace_owner_id</code>.</li>
+  <li><strong>Project access:</strong> V1 single-owner access model; no multi-user collaboration complexity yet.</li>
+  <li><strong>Asset access:</strong> signed URLs only; immutable objects private by default.</li>
+  <li><strong>Screenplay handling:</strong> store raw text encrypted at rest if provider or customer sensitivity requires; redact raw screenplay content from provider payload logs by default.</li>
+  <li><strong>Provider minimization:</strong> send only required scene/beat context to model calls, not whole project if avoidable.</li>
+  <li><strong>Retention:</strong> retain generated assets and snapshots while referenced; purge unreferenced temp normalized assets on retention schedule.</li>
+</ul>
+
+<h2>10. Build Sequence</h2>
+<ol>
+  <li><strong>Schema backbone:</strong> core tables, enums, assets, jobs, idempotency, outbox.</li>
+  <li><strong>Projection read side:</strong> <code>SceneWorkspace</code> DTO + derivation engine + workspace endpoint.</li>
+  <li><strong>M-01 parse pipeline</strong> with confidence and provenance.</li>
+  <li><strong>M-02 shot plan generation</strong> with rationale linting.</li>
+  <li><strong>M-03/M-04/M-06/M-07/M-08/M-09/M-10/M-11</strong> command endpoints with version checks.</li>
+  <li><strong>Worker scaffold:</strong> BullMQ, outbox, sweeper, SSE notification path.</li>
+  <li><strong>M-05 scene render</strong> with render snapshot persistence.</li>
+  <li><strong>M-12 local regen</strong> with append-only variant history and mutation isolation.</li>
+  <li><strong>M-13/M-14 continuity invalidation plumbing</strong>.</li>
+  <li><strong>M-15 export pipeline</strong> using export snapshots and PDFKit.</li>
+  <li><strong>Post-render validator</strong> for <code>F-04</code> / <code>F-06</code>.</li>
+  <li><strong>Telemetry + alerting</strong> aligned to matrix IDs and acceptance tests.</li>
+</ol>
+
+<h3>10.1 What can be stubbed for vertical slice</h3>
+<ul>
+  <li>Fallback image provider can be stubbed behind adapter.</li>
+  <li>Projection cache can be omitted initially if workspace endpoint remains single-query-assembly efficient.</li>
+  <li>Semantic validator can start simple if structural validator and manual failure handling exist.</li>
+  <li>Reference-asset cropping heuristics can be basic; normalization itself cannot be skipped.</li>
+</ul>
+
+<h3>10.2 Vertical slice complete when</h3>
+<ul>
+  <li>One scene can move end to end through <code>M-01 -&gt; M-05 -&gt; M-12 -&gt; M-15</code>.</li>
+  <li><code>AT-01</code> through <code>AT-20</code> can execute against seeded data or automated fixtures.</li>
+  <li><code>M-12</code> provably writes no sibling panel mutations.</li>
+  <li>Every mutation emits telemetry with <code>mutation_ref</code>.</li>
+  <li>Worker completions refresh projections and SSE notifies clients.</li>
+  <li>Export artifact is generated from persisted snapshot state, not client memory.</li>
+</ul>
+
+<h2>11. Technical Risks to Record Explicitly</h2>
+<ul>
+  <li><strong>Provider lock risk:</strong> continuity quality may depend on provider-specific multi-image conditioning behavior; mitigate with adapter and benchmark gate.</li>
+  <li><strong>UI state drift risk:</strong> if frontend infers behavioral truth, screen contract collapses; mitigate with server projection law.</li>
+  <li><strong>Cost risk:</strong> margins fail fast if average regens/panel exceed assumptions; enforce rate limits and cost telemetry from day one.</li>
+  <li><strong>Projection performance risk:</strong> scene hydration degrades without careful indexing or projection cache; benchmark early.</li>
+</ul>
+
+<h2>12. Non-Negotiable Spec Lines</h2>
+<ul>
+  <li>The client never reconstructs canonical workspace state from event history.</li>
+  <li>Commands are versioned and idempotent. Projections are rebuildable.</li>
+  <li>Provider completion is not acceptance.</li>
+  <li>Asset existence, integrity, validation, and version-match are all required before a generated artifact can become current state.</li>
+  <li>Canonical state points to immutable assets by ID; storage objects are append-only, lineage-tracked, and never overwritten in place.</li>
+</ul>
+</body>
+</html>

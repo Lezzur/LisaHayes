@@ -1,0 +1,751 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 18 /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R 27 0 R 29 0 R 31 0 R 33 0 R 35 0 R 37 0 R 39 0 R] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 2834 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (Storyboard AI ? Technical Build Spec  body { font-family: Inter, Arial, sans-serif; color:) Tj
+1 0 0 1 50 729 Tm (#111; margin: 38px; line-height: 1.4; font-size: 11px; } h1,h2,h3,h4 { margin: 0.9em 0 0.35em;) Tj
+1 0 0 1 50 716 Tm (} h1 { font-size: 24px; } h2 { font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom:) Tj
+1 0 0 1 50 703 Tm (4px; } h3 { font-size: 14px; } h4 { font-size: 12px; } p, li { margin: 0.25em 0; } ul {) Tj
+1 0 0 1 50 690 Tm (margin-top: 0.25em; } code { background:#f4f4f4; padding:1px 4px; border-radius:4px; } table {) Tj
+1 0 0 1 50 677 Tm (width:100%; border-collapse:collapse; margin:8px 0 14px; } th,td { border:1px solid #ccc;) Tj
+1 0 0 1 50 664 Tm (padding:6px; vertical-align:top; } th { background:#f7f7f7; text-align:left; } .small {) Tj
+1 0 0 1 50 651 Tm (font-size:10px; color:#555; } .pagebreak { page-break-before: always; }) Tj
+1 0 0 1 50 638 Tm (Storyboard AI ? Technical Build Spec) Tj
+1 0 0 1 50 612 Tm (Version: V1 engineering build spec) Tj
+1 0 0 1 50 599 Tm (Status: Ready for implementation) Tj
+1 0 0 1 50 586 Tm (Purpose: Translate the settled behavioral contract in the Product Brief V2 and Implementation) Tj
+1 0 0 1 50 573 Tm (Pack into an engineering blueprint a team can build from immediately.) Tj
+1 0 0 1 50 547 Tm (This document intentionally does not restate product strategy or behavioral rules except by) Tj
+1 0 0 1 50 534 Tm (reference to implementation-pack IDs such as M-05, F-04, and AT-15.) Tj
+1 0 0 1 50 508 Tm (0. Engineering Principles) Tj
+1 0 0 1 50 469 Tm (? V1 architecture: modular monolith, not microservices.) Tj
+1 0 0 1 50 443 Tm (? Commands mutate canonical state. Projections derive visible truth.) Tj
+1 0 0 1 50 417 Tm (? SSE signals change. GET /scenes/:id/workspace delivers truth.) Tj
+1 0 0 1 50 391 Tm (? Authoritative state changes are transactional; generated artifacts are asynchronous,) Tj
+1 0 0 1 50 378 Tm (  snapshot-based, idempotent side effects.) Tj
+1 0 0 1 50 352 Tm (? Provider output is provisional until stored, validated, version-checked, and promoted.) Tj
+1 0 0 1 50 326 Tm (? A panel is a logical record. An image is a versioned asset. Promotion changes pointers, not) Tj
+1 0 0 1 50 313 Tm (  files.) Tj
+1 0 0 1 50 287 Tm (1. System Architecture) Tj
+1 0 0 1 50 261 Tm (1.1 V1 deployment model) Tj
+1 0 0 1 50 222 Tm (? Web app: Next.js 15 App Router frontend.) Tj
+1 0 0 1 50 196 Tm (? API + domain backend: NestJS TypeScript app in the same repo and deploy unit.) Tj
+1 0 0 1 50 170 Tm (? Worker: separate process from the same codebase for async jobs triggered by M-05, M-12, and) Tj
+1 0 0 1 50 157 Tm (  M-15.) Tj
+1 0 0 1 50 131 Tm (? Primary DB: PostgreSQL 16.) Tj
+1 0 0 1 50 105 Tm (? Queue / locks: Redis + BullMQ.) Tj
+1 0 0 1 50 79 Tm (? Blob storage: S3/R2-compatible object store.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 2296 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (1.2 Why modular monolith) Tj
+1 0 0 1 50 703 Tm (| Option | Buys | Costs | Recommendation) Tj
+1 0 0 1 50 677 Tm (| Modular monolith | Fastest iteration, shared types, easier tracing, lower infra complexity,) Tj
+1 0 0 1 50 664 Tm (coherent transactions | Less deploy isolation, larger codebase boundaries to enforce manually |) Tj
+1 0 0 1 50 651 Tm (Choose for V1) Tj
+1 0 0 1 50 625 Tm (| Microservices | Independent scaling, harder isolation | Schema churn, distributed tracing) Tj
+1 0 0 1 50 612 Tm (overhead, more failure modes, slower team velocity | Defer until post-V1 scale pressure) Tj
+1 0 0 1 50 586 Tm (1.3 Internal module boundaries) Tj
+1 0 0 1 50 547 Tm (? workspace-api ? command endpoints, workspace projection endpoint, SSE.) Tj
+1 0 0 1 50 521 Tm (? ingest-parse ? screenplay ingest, format detection, parse, confidence scoring.) Tj
+1 0 0 1 50 495 Tm (? shot-planner ? beat annotations, shot recommendations, rationale generation, linting.) Tj
+1 0 0 1 50 469 Tm (? render-orchestrator ? render intent creation, asset prep, queueing, promotion, validation.) Tj
+1 0 0 1 50 443 Tm (? export ? export snapshot creation, PDF generation, signed delivery.) Tj
+1 0 0 1 50 417 Tm (? projection ? derived-state engine and SceneWorkspace assembly.) Tj
+1 0 0 1 50 391 Tm (? telemetry ? event capture, outbox dispatch, monitoring hooks.) Tj
+1 0 0 1 50 365 Tm (? auth-access ? authentication, project authorization, signed asset policies.) Tj
+1 0 0 1 50 339 Tm (1.4 State placement) Tj
+1 0 0 1 50 300 Tm (? Canonical state: Postgres.) Tj
+1 0 0 1 50 274 Tm (? Ephemeral state: Redis queue metadata, locks, rate-limit counters.) Tj
+1 0 0 1 50 248 Tm (? Artifacts: object store only.) Tj
+1 0 0 1 50 222 Tm (? Projection cache: optional materialized/cached scene workspace keyed by scene_id +) Tj
+1 0 0 1 50 209 Tm (  scene_version; rebuildable from canonical rows.) Tj
+1 0 0 1 50 183 Tm (1.5 Command/query separation) Tj
+1 0 0 1 50 144 Tm (? Command endpoints mutate narrow aggregates with optimistic concurrency and idempotency.) Tj
+1 0 0 1 50 118 Tm (? Queries read a server-projected SceneWorkspace DTO.) Tj
+1 0 0 1 50 92 Tm (? The client never derives stale, blocked, failed, or export-ready truth from raw rows.) Tj
+1 0 0 1 50 66 Tm (1.6 Async architecture) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 2459 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 716 Tm (? Queues: render-high \(for M-12\), render-normal \(for M-05\), export.) Tj
+1 0 0 1 50 690 Tm (? Outbox: DB outbox table for projection refresh and telemetry dispatch after commit.) Tj
+1 0 0 1 50 664 Tm (? Sweeper jobs: recover committed mutations without queued jobs, completed jobs without) Tj
+1 0 0 1 50 651 Tm (  projection refresh, stored assets without validation record.) Tj
+1 0 0 1 50 625 Tm (2. Technology Stack) Tj
+1 0 0 1 50 586 Tm (| Layer | Choice | Why) Tj
+1 0 0 1 50 560 Tm (| Frontend | Next.js 15, React, TypeScript | Strong app-router ergonomics, SSR, route handlers,) Tj
+1 0 0 1 50 547 Tm (unified TS stack) Tj
+1 0 0 1 50 521 Tm (| State/query | TanStack Query + Zustand | Query cache for server data, minimal client UI state) Tj
+1 0 0 1 50 508 Tm (for local controls only) Tj
+1 0 0 1 50 482 Tm (| UI | Tailwind, shadcn/ui, dnd-kit | Fast internal tool velocity, accessible primitives,) Tj
+1 0 0 1 50 469 Tm (reorder interactions) Tj
+1 0 0 1 50 443 Tm (| Backend | NestJS + TypeScript | Structured modules, DTO validation, worker sharing, same) Tj
+1 0 0 1 50 430 Tm (language end to end) Tj
+1 0 0 1 50 404 Tm (| ORM | Prisma | Fast schema iteration, typed access, migration support) Tj
+1 0 0 1 50 378 Tm (| DB | PostgreSQL 16 | Authoritative relational state, transactions, JSONB where useful, enums) Tj
+1 0 0 1 50 352 Tm (| Queue | Redis + BullMQ | Simple reliable job execution and priority queues) Tj
+1 0 0 1 50 326 Tm (| Storage | AWS S3 or Cloudflare R2 | Cheap immutable blobs and signed URL delivery) Tj
+1 0 0 1 50 300 Tm (| Auth | Clerk or Auth.js magic link | Simplicity wins for V1) Tj
+1 0 0 1 50 274 Tm (| PDF | PDFKit | Deterministic layout and pagination; avoid DOM screenshot export) Tj
+1 0 0 1 50 248 Tm (| Observability | Sentry + OpenTelemetry + structured logs | Trace commands, jobs, failures,) Tj
+1 0 0 1 50 235 Tm (and provider behavior) Tj
+1 0 0 1 50 209 Tm (2.1 Image generation provider strategy) Tj
+1 0 0 1 50 170 Tm (? Implement one render adapter interface with exactly two concrete providers: one primary, one) Tj
+1 0 0 1 50 157 Tm (  fallback.) Tj
+1 0 0 1 50 131 Tm (? Candidate primary: provider with strongest multi-image conditioning and continuity adherence) Tj
+1 0 0 1 50 118 Tm (  in benchmark.) Tj
+1 0 0 1 50 92 Tm (? Required adapter methods: buildPromptBundle\(\), buildReferenceSet\(\), submitRenderJob\(\),) Tj
+1 0 0 1 50 79 Tm (  normalizeProviderResponse\(\).) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 1313 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? Run a provider evaluation gate before locking primary: 20-scene benchmark on shot adherence,) Tj
+1 0 0 1 50 729 Tm (  continuity, retry drift, cost, latency.) Tj
+1 0 0 1 50 703 Tm (3. Database Schema) Tj
+1 0 0 1 50 677 Tm (3.1 Core entities) Tj
+1 0 0 1 50 638 Tm (? users) Tj
+1 0 0 1 50 612 Tm (? projects) Tj
+1 0 0 1 50 586 Tm (? style_profiles) Tj
+1 0 0 1 50 560 Tm (? scripts) Tj
+1 0 0 1 50 534 Tm (? script_lines \(line map / spans\)) Tj
+1 0 0 1 50 508 Tm (? scenes) Tj
+1 0 0 1 50 482 Tm (? beats) Tj
+1 0 0 1 50 456 Tm (? shots) Tj
+1 0 0 1 50 430 Tm (? panels \(stable logical entities\)) Tj
+1 0 0 1 50 404 Tm (? panel_variants \(append-only history\)) Tj
+1 0 0 1 50 378 Tm (? grounding_cards) Tj
+1 0 0 1 50 352 Tm (? grounding_card_images) Tj
+1 0 0 1 50 326 Tm (? entity_occurrences) Tj
+1 0 0 1 50 300 Tm (? shot_grounding_cards) Tj
+1 0 0 1 50 274 Tm (? panel_grounding_cards_snapshot) Tj
+1 0 0 1 50 248 Tm (? render_jobs) Tj
+1 0 0 1 50 222 Tm (? render_input_snapshots) Tj
+1 0 0 1 50 196 Tm (? export_jobs) Tj
+1 0 0 1 50 170 Tm (? export_snapshots) Tj
+1 0 0 1 50 144 Tm (? assets) Tj
+1 0 0 1 50 118 Tm (? asset_lineage) Tj
+1 0 0 1 50 92 Tm (? asset_bundles \(optional normalized reference bundles\)) Tj
+1 0 0 1 50 66 Tm (? mutation_requests \(idempotency + outcome\)) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 10 0 R >>
+endobj
+12 0 obj
+<< /Length 1820 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 729 Tm (? workspace_projection_cache \(optional\)) Tj
+1 0 0 1 50 703 Tm (? telemetry_events) Tj
+1 0 0 1 50 677 Tm (? outbox_events) Tj
+1 0 0 1 50 651 Tm (3.2 Recommended columns by table) Tj
+1 0 0 1 50 625 Tm (projects) Tj
+1 0 0 1 50 586 Tm (? id, workspace_owner_id, title, genre_preset, style_profile_id, created_at) Tj
+1 0 0 1 50 560 Tm (scripts) Tj
+1 0 0 1 50 521 Tm (? id, project_id, raw_text, format_detected, parse_status, parse_confidence, anomaly_count,) Tj
+1 0 0 1 50 508 Tm (  created_at) Tj
+1 0 0 1 50 482 Tm (scenes) Tj
+1 0 0 1 50 443 Tm (? id, project_id, script_id, order_index, slugline, confidence_state, export_readiness,) Tj
+1 0 0 1 50 430 Tm (  scene_version, projection_version, last_mutation_ref) Tj
+1 0 0 1 50 404 Tm (beats) Tj
+1 0 0 1 50 365 Tm (? id, scene_id, order_index, source_span_start, source_span_end, summary, semantic_tags_json,) Tj
+1 0 0 1 50 352 Tm (  confidence_state) Tj
+1 0 0 1 50 326 Tm (shots) Tj
+1 0 0 1 50 287 Tm (? id, scene_id, beat_id, order_index, shot_type, framing, angle, intent_notes, rationale,) Tj
+1 0 0 1 50 274 Tm (  continuity_note, approval_state, stale_state, stale_reason_code, warning_reason_code,) Tj
+1 0 0 1 50 261 Tm (  shot_version) Tj
+1 0 0 1 50 235 Tm (panels) Tj
+1 0 0 1 50 196 Tm (? id, scene_id, shot_id, order_index, current_variant_id, render_state, continuity_state,) Tj
+1 0 0 1 50 183 Tm (  stale_state, stale_reason_code, warning_reason_code, panel_version, is_anchor_pinned) Tj
+1 0 0 1 50 157 Tm (panel_variants) Tj
+1 0 0 1 50 118 Tm (? id, panel_id, image_asset_id, debug_manifest_asset_id, render_input_snapshot_id,) Tj
+1 0 0 1 50 105 Tm (  validation_status, promotion_status, provider_name, provider_model, seed, attempt_number,) Tj
+1 0 0 1 50 92 Tm (  created_at) Tj
+1 0 0 1 50 66 Tm (render_input_snapshots) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 12 0 R >>
+endobj
+14 0 obj
+<< /Length 1703 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 716 Tm (? id, project_id, scene_id, beat_id, shot_id, panel_id, mutation_ref, scene_version_at_enqueue,) Tj
+1 0 0 1 50 703 Tm (  shot_version_at_enqueue, panel_version_at_enqueue, style_profile_snapshot_json,) Tj
+1 0 0 1 50 690 Tm (  shot_spec_snapshot_json, grounding_snapshot_json, continuity_context_json, prompt_text,) Tj
+1 0 0 1 50 677 Tm (  negative_prompt, reference_bundle_id, render_intent_hash) Tj
+1 0 0 1 50 651 Tm (assets) Tj
+1 0 0 1 50 612 Tm (? asset_id, object_key, kind, mime_type, bytes, sha256, width, height, created_at) Tj
+1 0 0 1 50 586 Tm (3.3 Enums) Tj
+1 0 0 1 50 547 Tm (? approval_state) Tj
+1 0 0 1 50 521 Tm (? confidence_state) Tj
+1 0 0 1 50 495 Tm (? continuity_state) Tj
+1 0 0 1 50 469 Tm (? stale_state) Tj
+1 0 0 1 50 443 Tm (? render_state) Tj
+1 0 0 1 50 417 Tm (? export_readiness) Tj
+1 0 0 1 50 391 Tm (? Reason-code enums: stale_reason_code, warning_reason_code, blocked_reason_code) Tj
+1 0 0 1 50 365 Tm (3.4 Foreign-key discipline) Tj
+1 0 0 1 50 326 Tm (? panel_variants.image_asset_id -> assets.asset_id) Tj
+1 0 0 1 50 300 Tm (? panel_variants.normalized_reference_bundle_id -> asset_bundles.id \(if used\)) Tj
+1 0 0 1 50 274 Tm (? export_snapshots.pdf_asset_id -> assets.asset_id) Tj
+1 0 0 1 50 248 Tm (? grounding_card_images.asset_id -> assets.asset_id) Tj
+1 0 0 1 50 222 Tm (? Workflow tables do not store raw object keys except optional debug mirrors.) Tj
+1 0 0 1 50 196 Tm (3.5 Indexes and query patterns) Tj
+1 0 0 1 50 157 Tm (? beats\(scene_id, order_index\)) Tj
+1 0 0 1 50 131 Tm (? shots\(scene_id, order_index\)) Tj
+1 0 0 1 50 105 Tm (? panels\(scene_id, order_index\)) Tj
+1 0 0 1 50 79 Tm (? panels\(stale_state, scene_id\)) Tj
+ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 14 0 R >>
+endobj
+16 0 obj
+<< /Length 1952 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? shots\(approval_state, scene_id\)) Tj
+1 0 0 1 50 716 Tm (? render_jobs\(status, priority, created_at\)) Tj
+1 0 0 1 50 690 Tm (? panel_variants\(panel_id, created_at desc\)) Tj
+1 0 0 1 50 664 Tm (? entity_occurrences\(scene_id, entity_type, entity_id\)) Tj
+1 0 0 1 50 638 Tm (? mutation_requests\(project_id, mutation_ref, idempotency_key\) unique) Tj
+1 0 0 1 50 612 Tm (? assets\(sha256\) unique or semi-unique depending on dedupe policy) Tj
+1 0 0 1 50 586 Tm (Workspace query: one scene hydration endpoint returns scene, ordered beats, ordered shots,) Tj
+1 0 0 1 50 573 Tm (ordered logical panels, current variant metadata only, active jobs, stale/warning/blocker) Tj
+1 0 0 1 50 560 Tm (reason codes, export readiness, mutation provenance, and scene/entity versions.) Tj
+1 0 0 1 50 534 Tm (3.6 Storage strategy for images) Tj
+1 0 0 1 50 495 Tm (? All binaries in object storage.) Tj
+1 0 0 1 50 469 Tm (? Immutable key shape:) Tj
+1 0 0 1 50 456 Tm (  projects/{project_id}/scenes/{scene_id}/panels/{panel_id}/variants/{variant_id}/{asset_kind}.) Tj
+1 0 0 1 50 430 Tm (? Asset kinds: original, normalized, thumb_sm, thumb_md, export_pdf, optional) Tj
+1 0 0 1 50 417 Tm (  debug_manifest.json.) Tj
+1 0 0 1 50 391 Tm (? Never overwrite in place.) Tj
+1 0 0 1 50 365 Tm (3.7 Migrations) Tj
+1 0 0 1 50 326 Tm (? Use forward-only Prisma migrations.) Tj
+1 0 0 1 50 300 Tm (? Ship enums and core tables first.) Tj
+1 0 0 1 50 274 Tm (? Backfill nullable fields before adding not-null constraints.) Tj
+1 0 0 1 50 248 Tm (? Never make asset object keys part of business logic; IDs only.) Tj
+1 0 0 1 50 222 Tm (4. API Surface) Tj
+1 0 0 1 50 196 Tm (4.1 Read side) Tj
+1 0 0 1 50 157 Tm (? GET /scenes/:id/workspace ? authoritative SceneWorkspace DTO.) Tj
+1 0 0 1 50 131 Tm (? GET /scenes/:id/events ? SSE notification stream only.) Tj
+1 0 0 1 50 105 Tm (4.2 SceneWorkspace DTO) Tj
+1 0 0 1 50 66 Tm (? scene summary + versions) Tj
+ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 16 0 R >>
+endobj
+18 0 obj
+<< /Length 1707 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 729 Tm (? ordered beats / shots / panels) Tj
+1 0 0 1 50 703 Tm (? current variant metadata only) Tj
+1 0 0 1 50 677 Tm (? active job statuses) Tj
+1 0 0 1 50 651 Tm (? stale/warning/blocker reason codes) Tj
+1 0 0 1 50 625 Tm (? export readiness summary) Tj
+1 0 0 1 50 599 Tm (? mutation provenance summary) Tj
+1 0 0 1 50 573 Tm (? projection_version and generated_at) Tj
+1 0 0 1 50 547 Tm (4.3 Command endpoints) Tj
+1 0 0 1 50 508 Tm (| ID | Endpoint | Notes) Tj
+1 0 0 1 50 482 Tm (| M-01 | POST /projects/:id/script:parse | ingest + parse screenplay) Tj
+1 0 0 1 50 456 Tm (| M-02 | POST /scenes/:id/shot-plan:generate | generate shot plan) Tj
+1 0 0 1 50 430 Tm (| M-03 | POST /shots/:id/approve | approve single shot) Tj
+1 0 0 1 50 404 Tm (| M-04 | POST /scenes/:id/shots:approve-all | bulk approval) Tj
+1 0 0 1 50 378 Tm (| M-05 | POST /scenes/:id/render | enqueue scene render) Tj
+1 0 0 1 50 352 Tm (| M-06 | POST /shots/:id/revoke | revoke approval) Tj
+1 0 0 1 50 326 Tm (| M-07 | PATCH /shots/:id/spec | editable shot fields only) Tj
+1 0 0 1 50 300 Tm (| M-08 | POST /scenes/:id/shots:reorder | reorder shots) Tj
+1 0 0 1 50 274 Tm (| M-09 | POST /scenes/:id/shots | add shot) Tj
+1 0 0 1 50 248 Tm (| M-10 | DELETE /shots/:id | delete shot) Tj
+1 0 0 1 50 222 Tm (| M-11 | POST /beats/:id:split | split beat) Tj
+1 0 0 1 50 196 Tm (| M-12 | POST /panels/:id/regenerate | targeted panel regen) Tj
+1 0 0 1 50 170 Tm (| M-13 | POST /panels/:id/pin-anchor | pin continuity anchor) Tj
+1 0 0 1 50 144 Tm (| M-14 | PATCH /grounding-cards/:id | grounding update) Tj
+1 0 0 1 50 118 Tm (| M-15 | POST /projects/:id/export | enqueue export) Tj
+1 0 0 1 50 92 Tm (4.4 Command request rules) Tj
+ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 18 0 R >>
+endobj
+20 0 obj
+<< /Length 2116 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? Nontrivial writes require Idempotency-Key: M-01, M-02, M-05, M-12, M-15.) Tj
+1 0 0 1 50 716 Tm (? M-06 through M-14 require expected version in body.) Tj
+1 0 0 1 50 690 Tm (? M-07 editable fields only: shot_type, framing, angle, intent_notes.) Tj
+1 0 0 1 50 664 Tm (? Derived fields like rationale, stale markers, blockers, and approval state are server-owned.) Tj
+1 0 0 1 50 638 Tm (4.5 Command response shape) Tj
+1 0 0 1 50 612 Tm ({) Tj
+1 0 0 1 50 599 Tm ("status": "applied|rejected|replayed",) Tj
+1 0 0 1 50 586 Tm ("mutation_ref": "M-05",) Tj
+1 0 0 1 50 573 Tm ("target_ids": {"scene_id": "...", "panel_ids": ["..."]},) Tj
+1 0 0 1 50 560 Tm ("entity_versions": {"scene_version": 12, "panel_version": 4},) Tj
+1 0 0 1 50 547 Tm ("invalidation_summary": {...},) Tj
+1 0 0 1 50 534 Tm ("blocker_summary": {...},) Tj
+1 0 0 1 50 521 Tm ("workspace_summary": {...},) Tj
+1 0 0 1 50 508 Tm ("job": {"job_id": "...", "status": "queued"}) Tj
+1 0 0 1 50 495 Tm (}) Tj
+1 0 0 1 50 469 Tm (4.6 Error model) Tj
+1 0 0 1 50 430 Tm (| Error | HTTP | Maps to) Tj
+1 0 0 1 50 404 Tm (| VERSION_CONFLICT | 409 | conflicts on M-06..M-14) Tj
+1 0 0 1 50 378 Tm (| IDEMPOTENCY_KEY_REUSED_WITH_DIFFERENT_PAYLOAD | 422 | command replay safety) Tj
+1 0 0 1 50 352 Tm (| PARSE_VALIDATION_FAILED | 422 | F-01 / F-02) Tj
+1 0 0 1 50 326 Tm (| RENDER_VALIDATION_FAILED | 422 or job failure | F-04 / F-06) Tj
+1 0 0 1 50 300 Tm (| RENDER_PROVIDER_FAILED | 502 or job failure | F-05) Tj
+1 0 0 1 50 274 Tm (| EXPORT_BLOCKED | 409 | F-07) Tj
+1 0 0 1 50 248 Tm (| ASSET_INTEGRITY_FAILED | 500 / job failure | storage integrity) Tj
+1 0 0 1 50 222 Tm (4.7 SSE contract) Tj
+1 0 0 1 50 183 Tm (? SSE is notification only, never authoritative state transport.) Tj
+1 0 0 1 50 157 Tm (? Allowed uses: badges for queued/started, spinner presence, refresh trigger.) Tj
+1 0 0 1 50 131 Tm (? Not allowed: patching canonical freshness, promoting variants, clearing blockers.) Tj
+1 0 0 1 50 105 Tm (event types:) Tj
+1 0 0 1 50 92 Tm (- projection.updated) Tj
+1 0 0 1 50 79 Tm (- job.queued) Tj
+1 0 0 1 50 66 Tm (- job.started) Tj
+ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 1781 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (- job.completed) Tj
+1 0 0 1 50 729 Tm (- job.completed_stale) Tj
+1 0 0 1 50 716 Tm (- job.failed) Tj
+1 0 0 1 50 703 Tm (- validation.failed) Tj
+1 0 0 1 50 690 Tm (- export.completed) Tj
+1 0 0 1 50 664 Tm (required envelope:) Tj
+1 0 0 1 50 651 Tm (- event_id) Tj
+1 0 0 1 50 638 Tm (- scene_id) Tj
+1 0 0 1 50 625 Tm (- scene_version) Tj
+1 0 0 1 50 612 Tm (- projection_version) Tj
+1 0 0 1 50 599 Tm (- event_type) Tj
+1 0 0 1 50 586 Tm (- emitted_at) Tj
+1 0 0 1 50 573 Tm (- job_id \(if applicable\)) Tj
+1 0 0 1 50 560 Tm (- mutation_ref | job_ref) Tj
+1 0 0 1 50 547 Tm (- affected_ids) Tj
+1 0 0 1 50 534 Tm (- reason_codes) Tj
+1 0 0 1 50 482 Tm (? Client applies transient updates only if projection_version > current_projection_version.) Tj
+1 0 0 1 50 456 Tm (? If versions skip, regress, or reference unknown entities, client does full refetch.) Tj
+1 0 0 1 50 430 Tm (? After job.completed, job.completed_stale, validation.failed, export.completed: refetch by) Tj
+1 0 0 1 50 417 Tm (  default.) Tj
+1 0 0 1 50 391 Tm (5. Rendering Pipeline) Tj
+1 0 0 1 50 365 Tm (5.1 Core rule) Tj
+1 0 0 1 50 339 Tm (The worker receives a fully materialized, persisted, versioned RenderIntent /) Tj
+1 0 0 1 50 326 Tm (RenderInputSnapshot, never live workspace state.) Tj
+1 0 0 1 50 300 Tm (5.2 RenderIntent fields) Tj
+1 0 0 1 50 261 Tm (? project_id, scene_id, beat_id, shot_id, panel_id) Tj
+1 0 0 1 50 235 Tm (? mutation_ref \(M-05 or M-12\)) Tj
+1 0 0 1 50 209 Tm (? style_profile_snapshot) Tj
+1 0 0 1 50 183 Tm (? shot_spec_snapshot) Tj
+1 0 0 1 50 157 Tm (? grounding_refs[]) Tj
+1 0 0 1 50 131 Tm (? continuity_context \(prior panel refs + pinned anchor + continuity targets\)) Tj
+1 0 0 1 50 105 Tm (? negative_constraints) Tj
+1 0 0 1 50 79 Tm (? seed_policy) Tj
+ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 22 0 R >>
+endobj
+24 0 obj
+<< /Length 1985 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? output_tier) Tj
+1 0 0 1 50 716 Tm (? attempt_number) Tj
+1 0 0 1 50 690 Tm (? scene/shot/panel versions at enqueue) Tj
+1 0 0 1 50 664 Tm (? reference_bundle_id) Tj
+1 0 0 1 50 638 Tm (? render_intent_hash) Tj
+1 0 0 1 50 612 Tm (5.3 Prompt construction) Tj
+1 0 0 1 50 586 Tm (Each render request is assembled from four layers:) Tj
+1 0 0 1 50 547 Tm (? Shot block ? literal approved shot spec from M-05/M-12; renderer must not improvise shot) Tj
+1 0 0 1 50 534 Tm (  grammar.) Tj
+1 0 0 1 50 508 Tm (? World block ? style profile snapshot plus grounding card traits and reference handles.) Tj
+1 0 0 1 50 482 Tm (? Continuity block ? preserve facts from anchor panel, prior panel, and structured continuity) Tj
+1 0 0 1 50 469 Tm (  targets.) Tj
+1 0 0 1 50 443 Tm (? Constraint block ? negative prompt and do-not-change list.) Tj
+1 0 0 1 50 417 Tm (Prompt payload shape:) Tj
+1 0 0 1 50 378 Tm (? System: cinematic storyboard renderer; obey shot grammar exactly.) Tj
+1 0 0 1 50 352 Tm (? Developer: preserve anchors, do not add new characters/props, match framing/angle/type) Tj
+1 0 0 1 50 339 Tm (  exactly.) Tj
+1 0 0 1 50 313 Tm (? User: beat content, emotional intent, scene context.) Tj
+1 0 0 1 50 287 Tm (? Attachments: grounding card images, optional pinned anchor, optional prior accepted panel.) Tj
+1 0 0 1 50 261 Tm (5.4 Continuity enforcement) Tj
+1 0 0 1 50 235 Tm (Do not rely on prompt text or seeds alone. Use layered continuity:) Tj
+1 0 0 1 50 196 Tm (? Reference image conditioning ? canonical character/location/prop refs.) Tj
+1 0 0 1 50 170 Tm (? Pinned anchor support from M-13 with higher-weight image reference.) Tj
+1 0 0 1 50 144 Tm (? Structured continuity facts ? wardrobe, handedness, prop possession, time of day, location) Tj
+1 0 0 1 50 131 Tm (  features, camera side.) Tj
+1 0 0 1 50 105 Tm (? Canonical descriptors ? generated once and reused verbatim.) Tj
+1 0 0 1 50 79 Tm (? Shot-local seed reuse only as retry stabilizer.) Tj
+ET
+endstream
+endobj
+25 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 24 0 R >>
+endobj
+26 0 obj
+<< /Length 2131 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? Post-render validation ? vision pass for mismatch/drift.) Tj
+1 0 0 1 50 716 Tm (Entity continuity graph: internally model relationships among characters, props, locations,) Tj
+1 0 0 1 50 703 Tm (shots, panels, and anchors so M-13/M-14 invalidation and continuity selection stay) Tj
+1 0 0 1 50 690 Tm (deterministic instead of conditional spaghetti.) Tj
+1 0 0 1 50 664 Tm (5.5 Local-edit guarantee for M-12) Tj
+1 0 0 1 50 625 Tm (? M-12 creates a new panel_variants row for the target panel only.) Tj
+1 0 0 1 50 599 Tm (? Neighbor panels are never re-queued implicitly.) Tj
+1 0 0 1 50 573 Tm (? Neighbor prompt bundles are never recomputed.) Tj
+1 0 0 1 50 547 Tm (? Neighbor state rows are never mutated during regen.) Tj
+1 0 0 1 50 521 Tm (? Allowed writes: target panel current variant pointer \(after promotion\), target continuity) Tj
+1 0 0 1 50 508 Tm (  assessment, append-only variant history, telemetry.) Tj
+1 0 0 1 50 482 Tm (? Any downstream healing must be a separate explicit mutation, not hidden behavior.) Tj
+1 0 0 1 50 456 Tm (5.6 Render job flow) Tj
+1 0 0 1 50 417 Tm (? Command transaction writes mutation row, invalidation results, render snapshot, job stub.) Tj
+1 0 0 1 50 391 Tm (? After commit, outbox or queue dispatch enqueues render job with idempotency key.) Tj
+1 0 0 1 50 365 Tm (? Worker loads snapshot and asset bundle.) Tj
+1 0 0 1 50 339 Tm (? Asset preflight normalizer prepares provider-safe references.) Tj
+1 0 0 1 50 313 Tm (? Provider call executes.) Tj
+1 0 0 1 50 287 Tm (? Returned artifact stored in object storage and recorded in assets.) Tj
+1 0 0 1 50 261 Tm (? Validation runs.) Tj
+1 0 0 1 50 235 Tm (? Version check runs against current scene/shot/panel versions.) Tj
+1 0 0 1 50 209 Tm (? If validation and version match pass, transactional promotion updates current_variant_id.) Tj
+1 0 0 1 50 183 Tm (? Projection refresh + telemetry emit.) Tj
+1 0 0 1 50 157 Tm (5.7 Asset preflight normalizer) Tj
+1 0 0 1 50 118 Tm (? Fetch signed source asset) Tj
+1 0 0 1 50 92 Tm (? Validate MIME, dimensions, file size) Tj
+1 0 0 1 50 66 Tm (? Strip EXIF/metadata) Tj
+ET
+endstream
+endobj
+27 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 26 0 R >>
+endobj
+28 0 obj
+<< /Length 1816 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 729 Tm (? Transcode to provider-safe format) Tj
+1 0 0 1 50 703 Tm (? Optionally crop/focus) Tj
+1 0 0 1 50 677 Tm (? Generate deterministic hash) Tj
+1 0 0 1 50 651 Tm (? Write normalized asset + lineage row) Tj
+1 0 0 1 50 625 Tm (5.8 Validation) Tj
+1 0 0 1 50 599 Tm (Two-stage validator:) Tj
+1 0 0 1 50 560 Tm (? Cheap structural validator: corruption, dimensions, blank/low-detail detection, basic shot) Tj
+1 0 0 1 50 547 Tm (  class check.) Tj
+1 0 0 1 50 521 Tm (? Semantic validator: expected entities present, forbidden entities absent, shot adherence,) Tj
+1 0 0 1 50 508 Tm (  continuity anchor preservation.) Tj
+1 0 0 1 50 482 Tm (If stage 1 fails, skip stage 2. If validation fails, artifact remains stored but non-current) Tj
+1 0 0 1 50 469 Tm (and maps to F-04 or F-06.) Tj
+1 0 0 1 50 443 Tm (5.9 Queue policy) Tj
+1 0 0 1 50 404 Tm (? Priority: M-12 local regen outranks M-05 scene render.) Tj
+1 0 0 1 50 378 Tm (? Concurrency: start 2?4 concurrent renders per provider budget lane.) Tj
+1 0 0 1 50 352 Tm (? Timeout: panel render 90s hard timeout.) Tj
+1 0 0 1 50 326 Tm (? Retries: provider/network errors: 2 with exponential backoff; deterministic validation) Tj
+1 0 0 1 50 313 Tm (  mismatch: 1 constrained retry; repeated failure -> terminal job failure.) Tj
+1 0 0 1 50 287 Tm (? Idempotency: dedupe on render_intent_hash.) Tj
+1 0 0 1 50 261 Tm (5.10 Promotion preconditions) Tj
+1 0 0 1 50 222 Tm (? asset row exists) Tj
+1 0 0 1 50 196 Tm (? object upload confirmed) Tj
+1 0 0 1 50 170 Tm (? hash verified) Tj
+1 0 0 1 50 144 Tm (? validation record exists and passed) Tj
+1 0 0 1 50 118 Tm (? completion version check passed) Tj
+1 0 0 1 50 92 Tm (Otherwise status is non-promotable: FAILED_STORAGE, FAILED_VALIDATION, or COMPLETED_STALE.) Tj
+1 0 0 1 50 66 Tm (5.11 Cost model) Tj
+ET
+endstream
+endobj
+29 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 28 0 R >>
+endobj
+30 0 obj
+<< /Length 1873 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 716 Tm (? Parse: < $0.02 / scene) Tj
+1 0 0 1 50 690 Tm (? Shot plan: < $0.05 / scene) Tj
+1 0 0 1 50 664 Tm (? Panel rough render: $0.03?0.08) Tj
+1 0 0 1 50 638 Tm (? Panel presentation render: $0.08?0.25) Tj
+1 0 0 1 50 612 Tm (? 8-panel scene render envelope: roughly $0.64?2.00 before retry/export overhead) Tj
+1 0 0 1 50 586 Tm (6. Parse Pipeline) Tj
+1 0 0 1 50 560 Tm (6.1 Format detection and validation for M-01) Tj
+1 0 0 1 50 521 Tm (? Support Fountain first; accept plain text screenplay-ish input with heuristics.) Tj
+1 0 0 1 50 495 Tm (? Rule-based detection for sluglines, dialogue blocks, action blocks, parentheticals,) Tj
+1 0 0 1 50 482 Tm (  transitions.) Tj
+1 0 0 1 50 456 Tm (? Validation failures map to F-01/F-02 with scene/line-level reason codes.) Tj
+1 0 0 1 50 430 Tm (6.2 Hybrid parse approach) Tj
+1 0 0 1 50 391 Tm (? Deterministic parse for structural segmentation.) Tj
+1 0 0 1 50 365 Tm (? LLM normalization pass for malformed repairs, beat extraction, entity normalization.) Tj
+1 0 0 1 50 339 Tm (? Confidence scoring pass combining structural certainty, model certainty, entity resolution) Tj
+1 0 0 1 50 326 Tm (  certainty, and anomaly count.) Tj
+1 0 0 1 50 300 Tm (6.3 Confidence methodology) Tj
+1 0 0 1 50 274 Tm (scene_confidence = weighted\(rule_confidence, llm_confidence, entity_resolution_confidence,) Tj
+1 0 0 1 50 261 Tm (anomaly_penalty\)) Tj
+1 0 0 1 50 222 Tm (? Rule confidence: structural parser match quality.) Tj
+1 0 0 1 50 196 Tm (? LLM confidence: model self-report + schema completion quality.) Tj
+1 0 0 1 50 170 Tm (? Entity resolution confidence: normalized entity linkage certainty.) Tj
+1 0 0 1 50 144 Tm (? Anomaly penalty: malformed spans, conflicting scene boundaries, unresolved names.) Tj
+1 0 0 1 50 118 Tm (6.4 Domain mapping) Tj
+1 0 0 1 50 79 Tm (? script text -> scripts + script_lines) Tj
+ET
+endstream
+endobj
+31 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 30 0 R >>
+endobj
+32 0 obj
+<< /Length 1632 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? scene boundaries -> scenes) Tj
+1 0 0 1 50 716 Tm (? beat spans -> beats) Tj
+1 0 0 1 50 690 Tm (? entity mentions -> entity_occurrences + grounding seed candidates) Tj
+1 0 0 1 50 664 Tm (? confidence and provenance stored at scene/beat/entity level) Tj
+1 0 0 1 50 638 Tm (7. Shot Plan Generation) Tj
+1 0 0 1 50 612 Tm (7.1 Two-stage pipeline for M-02) Tj
+1 0 0 1 50 573 Tm (? Beat annotation stage: derive semantic features ? subject, reveal/withhold, motion, emotional) Tj
+1 0 0 1 50 560 Tm (  intensity, geography, POV relevance, continuity burden.) Tj
+1 0 0 1 50 534 Tm (? Recommendation stage: structured LLM output produces ShotRecommendation[].) Tj
+1 0 0 1 50 508 Tm (7.2 Output schema) Tj
+1 0 0 1 50 469 Tm (? shot_type) Tj
+1 0 0 1 50 443 Tm (? framing) Tj
+1 0 0 1 50 417 Tm (? angle) Tj
+1 0 0 1 50 391 Tm (? intent) Tj
+1 0 0 1 50 365 Tm (? rationale) Tj
+1 0 0 1 50 339 Tm (? continuity_note) Tj
+1 0 0 1 50 313 Tm (? source_beat_span_ids[]) Tj
+1 0 0 1 50 287 Tm (7.3 Rationale generation) Tj
+1 0 0 1 50 248 Tm (? Rationale must cite concrete beat facts, not generic cinematography filler.) Tj
+1 0 0 1 50 222 Tm (? Reject and regenerate rationale if it lacks beat evidence.) Tj
+1 0 0 1 50 196 Tm (? Store source beat span references for auditability.) Tj
+1 0 0 1 50 170 Tm (7.4 Genre preset influence) Tj
+1 0 0 1 50 131 Tm (? Genre preset acts as a weighting layer, not a template override.) Tj
+1 0 0 1 50 105 Tm (? It influences preferred framing frequency, motion tolerance, intimacy distance, and reveal) Tj
+1 0 0 1 50 92 Tm (  pacing.) Tj
+1 0 0 1 50 66 Tm (7.5 Anti-clichÈ guardrail) Tj
+ET
+endstream
+endobj
+33 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 32 0 R >>
+endobj
+34 0 obj
+<< /Length 2043 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 716 Tm (? Negative prompt/rules: avoid defaulting to establishing + shot-reverse-shot unless beat) Tj
+1 0 0 1 50 703 Tm (  structure justifies it.) Tj
+1 0 0 1 50 677 Tm (? Lint output for repeated shot types, boilerplate rationale phrases, monotony score.) Tj
+1 0 0 1 50 651 Tm (? If lint fails, regenerate before persisting rows.) Tj
+1 0 0 1 50 625 Tm (8. Infrastructure, Performance, and Cost) Tj
+1 0 0 1 50 599 Tm (8.1 Expected latency envelopes) Tj
+1 0 0 1 50 560 Tm (| Pipeline stage | Target latency) Tj
+1 0 0 1 50 534 Tm (| M-01 parse | 2?10s per scene depending on script length) Tj
+1 0 0 1 50 508 Tm (| M-02 shot plan | 2?8s per scene) Tj
+1 0 0 1 50 482 Tm (| M-05 panel render | 15?60s per panel typical, 90s hard timeout) Tj
+1 0 0 1 50 456 Tm (| M-12 local regen | same as panel render but priority queue) Tj
+1 0 0 1 50 430 Tm (| M-15 export | 5?20s typical, 60s hard timeout) Tj
+1 0 0 1 50 404 Tm (8.2 V1 scaling assumptions) Tj
+1 0 0 1 50 365 Tm (? Acceptable: low hundreds of active projects, dozens of concurrent render jobs,) Tj
+1 0 0 1 50 352 Tm (  one-scene-focused usage pattern.) Tj
+1 0 0 1 50 326 Tm (? Likely breakpoints: provider rate limits, render spend spikes, large-project workspace) Tj
+1 0 0 1 50 313 Tm (  hydration if projection caching is absent.) Tj
+1 0 0 1 50 287 Tm (? Hard V1 limits: max screenplay pages, max scenes/project, max reference images/grounding) Tj
+1 0 0 1 50 274 Tm (  card, max concurrent renders/user, max regen burst/minute.) Tj
+1 0 0 1 50 248 Tm (8.3 Monitoring and alerting) Tj
+1 0 0 1 50 209 Tm (? Track all command completions by mutation_ref.) Tj
+1 0 0 1 50 183 Tm (? Alert on provider error spikes, queue backlog, validation failure rate, stale-on-arrival) Tj
+1 0 0 1 50 170 Tm (  rate, export failure rate, asset integrity failures.) Tj
+1 0 0 1 50 144 Tm (? Tie telemetry event names to M-xx, AT-xx, F-xx references.) Tj
+1 0 0 1 50 118 Tm (9. Security and Data Handling) Tj
+1 0 0 1 50 79 Tm (? User isolation: every project scoped by workspace_owner_id.) Tj
+ET
+endstream
+endobj
+35 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 34 0 R >>
+endobj
+36 0 obj
+<< /Length 2419 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (? Project access: V1 single-owner access model; no multi-user collaboration complexity yet.) Tj
+1 0 0 1 50 716 Tm (? Asset access: signed URLs only; immutable objects private by default.) Tj
+1 0 0 1 50 690 Tm (? Screenplay handling: store raw text encrypted at rest if provider or customer sensitivity) Tj
+1 0 0 1 50 677 Tm (  requires; redact raw screenplay content from provider payload logs by default.) Tj
+1 0 0 1 50 651 Tm (? Provider minimization: send only required scene/beat context to model calls, not whole) Tj
+1 0 0 1 50 638 Tm (  project if avoidable.) Tj
+1 0 0 1 50 612 Tm (? Retention: retain generated assets and snapshots while referenced; purge unreferenced temp) Tj
+1 0 0 1 50 599 Tm (  normalized assets on retention schedule.) Tj
+1 0 0 1 50 573 Tm (10. Build Sequence) Tj
+1 0 0 1 50 534 Tm (? Schema backbone: core tables, enums, assets, jobs, idempotency, outbox.) Tj
+1 0 0 1 50 508 Tm (? Projection read side: SceneWorkspace DTO + derivation engine + workspace endpoint.) Tj
+1 0 0 1 50 482 Tm (? M-01 parse pipeline with confidence and provenance.) Tj
+1 0 0 1 50 456 Tm (? M-02 shot plan generation with rationale linting.) Tj
+1 0 0 1 50 430 Tm (? M-03/M-04/M-06/M-07/M-08/M-09/M-10/M-11 command endpoints with version checks.) Tj
+1 0 0 1 50 404 Tm (? Worker scaffold: BullMQ, outbox, sweeper, SSE notification path.) Tj
+1 0 0 1 50 378 Tm (? M-05 scene render with render snapshot persistence.) Tj
+1 0 0 1 50 352 Tm (? M-12 local regen with append-only variant history and mutation isolation.) Tj
+1 0 0 1 50 326 Tm (? M-13/M-14 continuity invalidation plumbing.) Tj
+1 0 0 1 50 300 Tm (? M-15 export pipeline using export snapshots and PDFKit.) Tj
+1 0 0 1 50 274 Tm (? Post-render validator for F-04 / F-06.) Tj
+1 0 0 1 50 248 Tm (? Telemetry + alerting aligned to matrix IDs and acceptance tests.) Tj
+1 0 0 1 50 222 Tm (10.1 What can be stubbed for vertical slice) Tj
+1 0 0 1 50 183 Tm (? Fallback image provider can be stubbed behind adapter.) Tj
+1 0 0 1 50 157 Tm (? Projection cache can be omitted initially if workspace endpoint remains single-query-assembly) Tj
+1 0 0 1 50 144 Tm (  efficient.) Tj
+1 0 0 1 50 118 Tm (? Semantic validator can start simple if structural validator and manual failure handling) Tj
+1 0 0 1 50 105 Tm (  exist.) Tj
+1 0 0 1 50 79 Tm (? Reference-asset cropping heuristics can be basic; normalization itself cannot be skipped.) Tj
+ET
+endstream
+endobj
+37 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 36 0 R >>
+endobj
+38 0 obj
+<< /Length 2057 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 50 742 Tm (10.2 Vertical slice complete when) Tj
+1 0 0 1 50 703 Tm (? One scene can move end to end through M-01 -> M-05 -> M-12 -> M-15.) Tj
+1 0 0 1 50 677 Tm (? AT-01 through AT-20 can execute against seeded data or automated fixtures.) Tj
+1 0 0 1 50 651 Tm (? M-12 provably writes no sibling panel mutations.) Tj
+1 0 0 1 50 625 Tm (? Every mutation emits telemetry with mutation_ref.) Tj
+1 0 0 1 50 599 Tm (? Worker completions refresh projections and SSE notifies clients.) Tj
+1 0 0 1 50 573 Tm (? Export artifact is generated from persisted snapshot state, not client memory.) Tj
+1 0 0 1 50 547 Tm (11. Technical Risks to Record Explicitly) Tj
+1 0 0 1 50 508 Tm (? Provider lock risk: continuity quality may depend on provider-specific multi-image) Tj
+1 0 0 1 50 495 Tm (  conditioning behavior; mitigate with adapter and benchmark gate.) Tj
+1 0 0 1 50 469 Tm (? UI state drift risk: if frontend infers behavioral truth, screen contract collapses; mitigate) Tj
+1 0 0 1 50 456 Tm (  with server projection law.) Tj
+1 0 0 1 50 430 Tm (? Cost risk: margins fail fast if average regens/panel exceed assumptions; enforce rate limits) Tj
+1 0 0 1 50 417 Tm (  and cost telemetry from day one.) Tj
+1 0 0 1 50 391 Tm (? Projection performance risk: scene hydration degrades without careful indexing or projection) Tj
+1 0 0 1 50 378 Tm (  cache; benchmark early.) Tj
+1 0 0 1 50 352 Tm (12. Non-Negotiable Spec Lines) Tj
+1 0 0 1 50 313 Tm (? The client never reconstructs canonical workspace state from event history.) Tj
+1 0 0 1 50 287 Tm (? Commands are versioned and idempotent. Projections are rebuildable.) Tj
+1 0 0 1 50 261 Tm (? Provider completion is not acceptance.) Tj
+1 0 0 1 50 235 Tm (? Asset existence, integrity, validation, and version-match are all required before a generated) Tj
+1 0 0 1 50 222 Tm (  artifact can become current state.) Tj
+1 0 0 1 50 196 Tm (? Canonical state points to immutable assets by ID; storage objects are append-only,) Tj
+1 0 0 1 50 183 Tm (  lineage-tracked, and never overwritten in place.) Tj
+ET
+endstream
+endobj
+39 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 38 0 R >>
+endobj
+xref
+0 40
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000239 00000 n 
+0000000309 00000 n 
+0000003195 00000 n 
+0000003321 00000 n 
+0000005669 00000 n 
+0000005795 00000 n 
+0000008306 00000 n 
+0000008432 00000 n 
+0000009798 00000 n 
+0000009926 00000 n 
+0000011799 00000 n 
+0000011927 00000 n 
+0000013683 00000 n 
+0000013811 00000 n 
+0000015816 00000 n 
+0000015944 00000 n 
+0000017704 00000 n 
+0000017832 00000 n 
+0000020001 00000 n 
+0000020129 00000 n 
+0000021963 00000 n 
+0000022091 00000 n 
+0000024129 00000 n 
+0000024257 00000 n 
+0000026441 00000 n 
+0000026569 00000 n 
+0000028438 00000 n 
+0000028566 00000 n 
+0000030492 00000 n 
+0000030620 00000 n 
+0000032305 00000 n 
+0000032433 00000 n 
+0000034529 00000 n 
+0000034657 00000 n 
+0000037129 00000 n 
+0000037257 00000 n 
+0000039367 00000 n 
+trailer
+<< /Size 40 /Root 1 0 R >>
+startxref
+39495
+%%EOF

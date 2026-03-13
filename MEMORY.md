@@ -27,3 +27,4 @@ This file captures raw, timestamped signals, corrections, and immediate preferen
 - [2026-03-12 UTC] [CORRECTION] Rick corrected Rentaro workspace path: `/home/node/.openclaw/workspace-rentaro`.
 - [2026-03-12 UTC] [CORRECTION] Rick corrected Nami workspace path: `/home/node/.openclaw/workspace-nami`.
 - [2026-03-12 UTC] [RULE] Rick established Agent Execution Protocol: Talk Less, Build More. When enough information exists to produce a deliverable, stop proposing and execute immediately. No permission-seeking language unless explicit approval is required.
+- [2026-03-13 UTC] [CORRECTION] Rick said the long-term memory previously shown from `/home/node/.openclaw/workspace` was Lisa's, not Tony's.
