@@ -28,6 +28,8 @@
 
 - Cross-agent identity bleed (observed 3 times) — Claude Code has replied in Lisa's voice/cadence when sharing workspace context. Must maintain strict identity separation in group/agent chat. — last seen 2026-03-10
 
+- Agent/workspace identity separation (observed 8 times) — repeated corrections established that agent identity, workspace path, and memory scope must not be assumed. Treat persona/workspace files as contextual unless explicitly instructed; verify per-agent workspace paths and keep memory boundaries separate. — last seen 2026-03-12
+
 ---
 
 ## Consolidation Log
