@@ -28,7 +28,7 @@
 
 - Cross-agent identity bleed (observed 3 times) — Claude Code has replied in Lisa's voice/cadence when sharing workspace context. Must maintain strict identity separation in group/agent chat. — last seen 2026-03-10
 
-- Agent/workspace identity separation (observed 9 times) — repeated corrections established that agent identity, workspace path, and memory scope must not be assumed. Treat persona/workspace files as contextual unless explicitly instructed; verify per-agent workspace paths and keep memory boundaries separate. — last seen 2026-03-13
+- Agent/workspace identity separation (observed 18 times) — repeated corrections established that agent identity, workspace path, and memory scope must not be assumed. Treat persona/workspace files as contextual unless explicitly instructed; verify per-agent workspace paths and keep memory boundaries separate. — last seen 2026-03-13
 
 - Vault skill / secure credential handling work (observed 2 times) — vault skill creation and follow-up work references indicate ongoing focus on secure credential handling for project workflows. — last seen 2026-03-10
 
@@ -45,6 +45,7 @@
 | 2026-03-11 | MEMORY.md reviewed incl. expanded room-continuity notes | 2 patterns (multi-agent room continuity, Lisa/Claude role split) | None |
 | 2026-03-12 | 43KB MEMORY.md consolidated (external) | 3 patterns (auto-mode repetition, browser bridge, identity bleed) | 2 truths (no repetition rule, auto-mode behavior rule) |
 | 2026-03-14 | MEMORY.md reviewed incl. 2026-03-13 correction | 2 pattern updates (agent/workspace identity separation count raised; vault skill / secure credential handling promoted) | None |
+| 2026-03-15 | MEMORY.md reviewed for scheduled consolidation | 1 pattern update (agent/workspace identity separation count raised to 18) | None |
 ## Conversation Behavior Rules
 
   **Core rule: Speak only when you have a reason to.**
